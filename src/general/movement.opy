@@ -26,36 +26,68 @@ rule "[Movement] On Spawn":
     @Condition eventPlayer.hasSpawned() == true
     @Condition eventPlayer.isDummy() == false
 
-    eventPlayer.setMaxHealth(9999)
-    eventPlayer.setHealth(99999)
-    if not chaosMode:
-        eventPlayer.lives[0] = createWorkshopSetting(int[1:5], "Customization", "Player Health", 3, 2)
-    else:
-        eventPlayer.lives[0] = 1
-    eventPlayer.lives[1] = eventPlayer.lives[0]
-    eventPlayer.startCamera(raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + newBackward * 20 + Vector.UP * 2, null, null, false).getHitPosition(), eventPlayer.getEyePosition() + Vector.UP, 7.5)
-    createProgressBarInWorldText(eventPlayer, (eventPlayer.lives[0] / eventPlayer.lives[1]) * 100, "", updateEveryTick(eventPlayer.getPosition()+ Vector.DOWN * 5), 1, Clip.NONE, Color.RED if eventPlayer.lives[0] == 1 else Color.GREEN if eventPlayer.lives[0] / eventPlayer.lives[1] >= 5/5 else rgb(100, 245, 45) if eventPlayer.lives[0] / eventPlayer.lives[1] >= 4/5 else Color.YELLOW if eventPlayer.lives[0] / eventPlayer.lives[1] >= 3/5 else rgb(216, 75, 9), Color.WHITE, ProgressWorldTextReeval.VISIBILITY_POSITION_VALUES_AND_COLOR, SpecVisibility.DEFAULT)
-    
-rule "[Movement] Outline Updating":
+    #if roundUnderway:
+    #    kill(eventPlayer, null)
+    #else:
+        eventPlayer.setMaxHealth(9999)
+        eventPlayer.setHealth(99999)
+        if not chaosMode:
+            eventPlayer.lives[0] = createWorkshopSetting(int[1:5], "Customization", "Player Health", 3, 2)
+        else:
+            eventPlayer.lives[0] = 1
+        eventPlayer.lives[1] = eventPlayer.lives[0]
+        eventPlayer.startCamera(raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + newBackward * 20 + Vector.UP * 2, null, null, false).getHitPosition(), eventPlayer.getEyePosition() + Vector.UP, 7.5)
+        createProgressBarInWorldText(eventPlayer, (eventPlayer.lives[0] / eventPlayer.lives[1]) * 100, "", updateEveryTick(eventPlayer.getPosition()+ Vector.DOWN * 5), 1, Clip.NONE, eventPlayer.livesColor, Color.WHITE, ProgressWorldTextReeval.VISIBILITY_POSITION_VALUES_AND_COLOR, SpecVisibility.DEFAULT)
+
+rule "[Movement] Color Updating (Outline & Healthbar":
     @Event eachPlayer
     @Condition eventPlayer.hasSpawned() == true
     @Condition eventPlayer.isDummy() == false
+    @Condition eventPlayer.lives[0] != null
 
-    eventPlayer.startForcingOutlineFor(getAllPlayers(), true , Color.GREEN, OutlineVisibility.ALWAYS)
-    waitUntil(eventPlayer.lives[0] == 1 or eventPlayer.lives[0] / eventPlayer.lives[1] <= (4/5), 9999)
-    eventPlayer.stopForcingOutlineFor(getAllPlayers())
-    eventPlayer.startForcingOutlineFor(getAllPlayers(), true , Color.LIME_GREEN, OutlineVisibility.ALWAYS)
-    waitUntil(eventPlayer.lives[0] == 1 or eventPlayer.lives[0] / eventPlayer.lives[1] <= (3/5), 9999)
-    eventPlayer.stopForcingOutlineFor(getAllPlayers())
-    eventPlayer.startForcingOutlineFor(getAllPlayers(), true , Color.YELLOW, OutlineVisibility.ALWAYS)
-    waitUntil(eventPlayer.lives[0] == 1 or eventPlayer.lives[0] / eventPlayer.lives[1] <= (2/5), 9999)
-    eventPlayer.stopForcingOutlineFor(getAllPlayers())
-    eventPlayer.startForcingOutlineFor(getAllPlayers(), true , Color.ORANGE, OutlineVisibility.ALWAYS)
-    waitUntil(eventPlayer.lives[0] == 1 or eventPlayer.lives[0] / eventPlayer.lives[1] <= (1/5), 9999)
-    eventPlayer.stopForcingOutlineFor(getAllPlayers())
-    eventPlayer.startForcingOutlineFor(getAllPlayers(), true , Color.RED, OutlineVisibility.ALWAYS)
-    waitUntil(eventPlayer.lives[0] == 0, 9999)
-    eventPlayer.stopForcingOutlineFor(getAllPlayers())
+    eventPlayer.livesColor = Color.GREEN
+    eventPlayer.startForcingOutlineFor(getAllPlayers(), true, eventPlayer.livesColor, OutlineVisibility.ALWAYS)
+    wait()
+    if eventPlayer.lives[1] == 5:
+        waitUntil(eventPlayer.lives[0] == 4, 9999)
+        eventPlayer.livesColor = rgb(120,235,50)
+        eventPlayer.startForcingOutlineFor(getAllPlayers(), true, Color.LIME_GREEN, OutlineVisibility.ALWAYS)
+        waitUntil(eventPlayer.lives[0] == 3, 9999)
+        eventPlayer.livesColor = Color.YELLOW
+        eventPlayer.startForcingOutlineFor(getAllPlayers(), true, eventPlayer.livesColor, OutlineVisibility.ALWAYS)
+        waitUntil(eventPlayer.lives[0] == 2, 9999)
+        eventPlayer.livesColor = rgb(215,75,10)
+        eventPlayer.startForcingOutlineFor(getAllPlayers(), true, Color.ORANGE, OutlineVisibility.ALWAYS)
+        waitUntil(eventPlayer.lives[0] == 1, 9999)
+        eventPlayer.livesColor = Color.RED
+        eventPlayer.startForcingOutlineFor(getAllPlayers(), true, eventPlayer.livesColor, OutlineVisibility.ALWAYS)
+    elif eventPlayer.lives[1] == 4:
+        waitUntil(eventPlayer.lives[0] == 3, 9999)
+        eventPlayer.livesColor = Color.YELLOW
+        eventPlayer.startForcingOutlineFor(getAllPlayers(), true, eventPlayer.livesColor, OutlineVisibility.ALWAYS)
+        waitUntil(eventPlayer.lives[0] == 2, 9999)
+        eventPlayer.livesColor = rgb(215,75,10)
+        eventPlayer.startForcingOutlineFor(getAllPlayers(), true, Color.ORANGE, OutlineVisibility.ALWAYS)
+        waitUntil(eventPlayer.lives[0] == 1, 9999)
+        eventPlayer.livesColor = Color.RED
+        eventPlayer.startForcingOutlineFor(getAllPlayers(), true, eventPlayer.livesColor, OutlineVisibility.ALWAYS)
+    elif eventPlayer.lives[1] == 3:
+        waitUntil(eventPlayer.lives[0] == 2, 9999)
+        eventPlayer.livesColor = Color.YELLOW
+        eventPlayer.startForcingOutlineFor(getAllPlayers(), true, eventPlayer.livesColor, OutlineVisibility.ALWAYS)
+        waitUntil(eventPlayer.lives[0] == 1, 9999)
+        eventPlayer.livesColor = Color.RED
+        eventPlayer.startForcingOutlineFor(getAllPlayers(), true, eventPlayer.livesColor, OutlineVisibility.ALWAYS)
+    elif eventPlayer.lives[1] == 2:
+        waitUntil(eventPlayer.lives[0] == 1, 9999)
+        eventPlayer.livesColor = Color.RED
+        eventPlayer.startForcingOutlineFor(getAllPlayers(), true, eventPlayer.livesColor, OutlineVisibility.ALWAYS)
+    elif eventPlayer.lives[1] == 1:
+        eventPlayer.livesColor = Color.RED
+        eventPlayer.startForcingOutlineFor(getAllPlayers(), true, eventPlayer.livesColor, OutlineVisibility.ALWAYS)
+    else:
+        eventPlayer.livesColor = Color.WHITE
+        eventPlayer.startForcingOutlineFor(getAllPlayers(), true, eventPlayer.livesColor, OutlineVisibility.ALWAYS)
 
 rule "[Movement] On Death":
     @Event playerDied
@@ -99,7 +131,7 @@ rule "[Movement] Change Facing Direction":
 
 rule "[Movement] Use Dash":
     @Event eachPlayer
-    @Condition dashEnabled
+    @Condition ability1Enabled
     @Condition eventPlayer.isHoldingButton(Button.ABILITY_1)
 
     if not eventPlayer.isHoldingButton(Button.SECONDARY_FIRE):
@@ -109,7 +141,7 @@ rule "[Movement] Use Dash":
 
 rule "[Movement] Use Deflect":
     @Event eachPlayer
-    @Condition deflectEnabled
+    @Condition ability2Enabled
     @Condition eventPlayer.isHoldingButton(Button.ABILITY_2)
 
     if not eventPlayer.isHoldingButton(Button.SECONDARY_FIRE):
@@ -158,6 +190,7 @@ rule "[Movement] Remove Ultimate Generation on Damage":
 
     stopChasingVariable(eventPlayer.ultCharge)
     eventPlayer.ultCharge = 0
+    eventPlayer.setUltCharge(eventPlayer.ultCharge)
     wait(2)
     chase(eventPlayer.ultCharge, 100, rate=3.333, ChaseReeval.NONE)
 

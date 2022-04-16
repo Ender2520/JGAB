@@ -11,12 +11,12 @@ def Round_Status():
         roundStatus = "{0} CHAOS PHASE {0}".format(iconString(Icon.SKULL))
 
 def GamePhase_SpawnBots():
+    roundUnderway = true
     async(Round_Status(), AsyncBehavior.NOOP)
     setObjectiveDescription(getAllPlayers(), "Survive Until The Timer Ends!", HudReeval.VISIBILITY)
-    setMatchTime(chaos(120) 60 + (difficulty*6))
+    setMatchTime(chaos(120) roundLength)
     wait()
     unpauseMatchTime()
-    roundUnderway = true
     ### Actual Game Mechanics
     #
     # Determine Difficulty
@@ -32,19 +32,19 @@ def GamePhase_SpawnBots():
             if rng <= 100*((pWeight)/totalWeight): # Spawn Pharah
                 createDummy(Hero.PHARAH, Team.2, -1, vect(0,50,0), vect(0,0,0))
                 getLastCreatedEntity().enemyType = random.randint(0,2)
-                wait(random.randint(0, 1) + (len(getPlayers(Team.2)) * 0.02))
+                wait(random.uniform(0, 1) + (len(getPlayers(Team.2)) * 0.02))
             elif rng <= 100*((pWeight+oWeight)/totalWeight): # Spawn Orisa
                 createDummy(Hero.ORISA, Team.2, -1, vect(0,50,0), vect(0,0,0))
                 getLastCreatedEntity().enemyType = random.randint(0,1)
-                wait(random.randint(0.5, 1.5) + (len(getPlayers(Team.2)) * 0.02))
+                wait(random.uniform(0.5, 1.5) + (len(getPlayers(Team.2)) * 0.02))
             elif rng <= 100*((pWeight+oWeight+mWeight)/totalWeight): # Spawn Mei
                 createDummy(Hero.MEI, Team.2, -1, vect(0,50,0), vect(0,0,0))
                 getLastCreatedEntity().enemyType = random.randint(0,1)
-                wait(random.randint(1, 2) + (len(getPlayers(Team.2)) * 0.02))
+                wait(random.uniform(1, 2) + (len(getPlayers(Team.2)) * 0.02))
             elif rng <= 100*((pWeight+oWeight+mWeight+rWeight)/totalWeight): # Spawn Reinhardt
                 createDummy(Hero.REINHARDT, Team.2, -1, vect(0,50,0), vect(0,0,0))
                 getLastCreatedEntity().enemyType = random.randint(0,1)
-                wait(random.randint(1.5, 2.5) + (len(getPlayers(Team.2)) * 0.02))
+                wait(random.uniform(1.5, 2.5) + (len(getPlayers(Team.2)) * 0.02))
     elif difficulty == 1 or difficulty == 2:
         if difficulty == 1:
             pWeight = 100
@@ -65,37 +65,37 @@ def GamePhase_SpawnBots():
                 if rng <= 100*((pWeight)/totalWeight): # Spawn Pharah
                     createDummy(Hero.PHARAH, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,2)
-                    wait(random.randint(1, 4) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(1, 3) + (len(getPlayers(Team.2)) * 0.02))
                 elif rng <= 100*((pWeight+oWeight)/totalWeight): # Spawn Orisa
                     createDummy(Hero.ORISA, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(2, 5) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(2, 4) + (len(getPlayers(Team.2)) * 0.02))
                 elif rng <= 100*((pWeight+oWeight+mWeight)/totalWeight): # Spawn Mei
                     createDummy(Hero.MEI, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(3, 6) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(3, 5) + (len(getPlayers(Team.2)) * 0.02))
                 elif rng <= 100*((pWeight+oWeight+mWeight+rWeight)/totalWeight): # Spawn Reinhardt
                     createDummy(Hero.REINHARDT, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(4, 6) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(4, 6) + (len(getPlayers(Team.2)) * 0.02))
             else:
                 # Determine Bot Type
                 if rng <= 100*((pWeight)/totalWeight): # Spawn Pharah
                     createDummy(Hero.PHARAH, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,2)
-                    wait(random.randint(1 * 0.75, 4 * 0.75) + (len(getPlayers(Team.2)) * 0.125))
+                    wait(random.uniform(1 * 0.75, 3 * 0.75) + (len(getPlayers(Team.2)) * 0.125))
                 elif rng <= 100*((pWeight+oWeight)/totalWeight): # Spawn Orisa
                     createDummy(Hero.ORISA, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(2 * 0.75, 5 * 0.75) + (len(getPlayers(Team.2)) * 0.125))
+                    wait(random.uniform(2 * 0.75, 4 * 0.75) + (len(getPlayers(Team.2)) * 0.125))
                 elif rng <= 100*((pWeight+oWeight+mWeight)/totalWeight): # Spawn Mei
                     createDummy(Hero.MEI, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(3 * 0.75, 6 * 0.75) + (len(getPlayers(Team.2)) * 0.125))
+                    wait(random.uniform(3 * 0.75, 5 * 0.75) + (len(getPlayers(Team.2)) * 0.125))
                 elif rng <= 100*((pWeight+oWeight+mWeight+rWeight)/totalWeight): # Spawn Reinhardt
                     createDummy(Hero.REINHARDT, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(4 * 0.75, 6 * 0.75) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(4 * 0.75, 6 * 0.75) + (len(getPlayers(Team.2)) * 0.02))
     elif difficulty == 3 or difficulty == 4:
         if difficulty == 3:
             pWeight = 100
@@ -116,37 +116,37 @@ def GamePhase_SpawnBots():
                 if rng <= 100*((pWeight)/totalWeight): # Spawn Pharah
                     createDummy(Hero.PHARAH, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,2)
-                    wait(random.randint(0.8, 3.6) + (len(getPlayers(Team.2)) * 0.1))
+                    wait(random.uniform(0.8, 2.7) + (len(getPlayers(Team.2)) * 0.1))
                 elif rng <= 100*((pWeight+oWeight)/totalWeight): # Spawn Orisa
                     createDummy(Hero.ORISA, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(1.7, 4.5) + (len(getPlayers(Team.2)) * 0.1))
+                    wait(random.uniform(1.7, 3.6) + (len(getPlayers(Team.2)) * 0.1))
                 elif rng <= 100*((pWeight+oWeight+mWeight)/totalWeight): # Spawn Mei
                     createDummy(Hero.MEI, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(2.6, 5.4) + (len(getPlayers(Team.2)) * 0.1))
+                    wait(random.uniform(2.6, 4.5) + (len(getPlayers(Team.2)) * 0.1))
                 elif rng <= 100*((pWeight+oWeight+mWeight+rWeight)/totalWeight): # Spawn Reinhardt
                     createDummy(Hero.REINHARDT, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(3.5, 5.5) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(3.5, 5.4) + (len(getPlayers(Team.2)) * 0.02))
             else:
                 # Determine Bot Type
                 if rng <= 100*((pWeight)/totalWeight): # Spawn Pharah
                     createDummy(Hero.PHARAH, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,2)
-                    wait(random.randint(0.8 * 0.75, 3.6 * 0.75) + (len(getPlayers(Team.2)) * 0.1))
+                    wait(random.uniform(0.8 * 0.75, 2.7 * 0.75) + (len(getPlayers(Team.2)) * 0.1))
                 elif rng <= 100*((pWeight+oWeight)/totalWeight): # Spawn Orisa
                     createDummy(Hero.ORISA, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(1.7 * 0.75, 4.5 * 0.75) + (len(getPlayers(Team.2)) * 0.1))
+                    wait(random.uniform(1.7 * 0.75, 3.6 * 0.75) + (len(getPlayers(Team.2)) * 0.1))
                 elif rng <= 100*((pWeight+oWeight+mWeight)/totalWeight): # Spawn Mei
                     createDummy(Hero.MEI, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(2.6 * 0.75, 5.4 * 0.75) + (len(getPlayers(Team.2)) * 0.1))
+                    wait(random.uniform(2.6 * 0.75, 4.5 * 0.75) + (len(getPlayers(Team.2)) * 0.1))
                 elif rng <= 100*((pWeight+oWeight+mWeight+rWeight)/totalWeight): # Spawn Reinhardt
                     createDummy(Hero.REINHARDT, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(3.5 * 0.75, 5.5 * 0.75) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(3.5 * 0.75, 5.4 * 0.75) + (len(getPlayers(Team.2)) * 0.02))
     elif difficulty == 5 or difficulty == 6:
         if difficulty == 5:
             pWeight = 100
@@ -167,37 +167,37 @@ def GamePhase_SpawnBots():
                 if rng <= 100*((pWeight)/totalWeight): # Spawn Pharah
                     createDummy(Hero.PHARAH, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,2)
-                    wait(random.randint(0.6, 3.2) + (len(getPlayers(Team.2)) * 0.08))
+                    wait(random.uniform(0.6, 2.4) + (len(getPlayers(Team.2)) * 0.08))
                 elif rng <= 100*((pWeight+oWeight)/totalWeight): # Spawn Orisa
                     createDummy(Hero.ORISA, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(1.4, 4) + (len(getPlayers(Team.2)) * 0.08))
+                    wait(random.uniform(1.4, 3.2) + (len(getPlayers(Team.2)) * 0.08))
                 elif rng <= 100*((pWeight+oWeight+mWeight)/totalWeight): # Spawn Mei
                     createDummy(Hero.MEI, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(2.2, 4.8) + (len(getPlayers(Team.2)) * 0.08))
+                    wait(random.uniform(2.2, 4) + (len(getPlayers(Team.2)) * 0.08))
                 elif rng <= 100*((pWeight+oWeight+mWeight+rWeight)/totalWeight): # Spawn Reinhardt
                     createDummy(Hero.REINHARDT, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(3, 5) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(3, 4.8) + (len(getPlayers(Team.2)) * 0.02))
             else:
                 # Determine Bot Type
                 if rng <= 100*((pWeight)/totalWeight): # Spawn Pharah
                     createDummy(Hero.PHARAH, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,2)
-                    wait(random.randint(0.6 * 0.75, 3.2 * 0.75) + (len(getPlayers(Team.2)) * 0.08))
+                    wait(random.uniform(0.6 * 0.75, 2.4 * 0.75) + (len(getPlayers(Team.2)) * 0.08))
                 elif rng <= 100*((pWeight+oWeight)/totalWeight): # Spawn Orisa
                     createDummy(Hero.ORISA, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(1.4 * 0.75, 4 * 0.75) + (len(getPlayers(Team.2)) * 0.08))  
+                    wait(random.uniform(1.4 * 0.75, 3.2 * 0.75) + (len(getPlayers(Team.2)) * 0.08))  
                 elif rng <= 100*((pWeight+oWeight+mWeight)/totalWeight): # Spawn Mei
                     createDummy(Hero.MEI, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(2.2 * 0.75, 4.8 * 0.75) + (len(getPlayers(Team.2)) * 0.08))
+                    wait(random.uniform(2.2 * 0.75, 4 * 0.75) + (len(getPlayers(Team.2)) * 0.08))
                 elif rng <= 100*((pWeight+oWeight+mWeight+rWeight)/totalWeight): # Spawn Reinhardt
                     createDummy(Hero.REINHARDT, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(3 * 0.75, 5 * 0.75) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(3 * 0.75, 4.8 * 0.75) + (len(getPlayers(Team.2)) * 0.02))
     elif difficulty == 7 or difficulty == 8:
         if difficulty == 7:
             pWeight = 100
@@ -218,37 +218,37 @@ def GamePhase_SpawnBots():
                 if rng <= 100*((pWeight)/totalWeight): # Spawn Pharah
                     createDummy(Hero.PHARAH, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,2)
-                    wait(random.randint(0.4, 2.8) + (len(getPlayers(Team.2)) * 0.06))
+                    wait(random.uniform(0.4, 2.1) + (len(getPlayers(Team.2)) * 0.06))
                 elif rng <= 100*((pWeight+oWeight)/totalWeight): # Spawn Orisa
                     createDummy(Hero.ORISA, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(1.1, 3.5) + (len(getPlayers(Team.2)) * 0.06))
+                    wait(random.uniform(1.1, 2.8) + (len(getPlayers(Team.2)) * 0.06))
                 elif rng <= 100*((pWeight+oWeight+mWeight)/totalWeight): # Spawn Mei
                     createDummy(Hero.MEI, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(1.8, 4.2) + (len(getPlayers(Team.2)) * 0.06))
+                    wait(random.uniform(1.8, 3.5) + (len(getPlayers(Team.2)) * 0.06))
                 elif rng <= 100*((pWeight+oWeight+mWeight+rWeight)/totalWeight): # Spawn Reinhardt
                     createDummy(Hero.REINHARDT, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(2.5, 4.5) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(2.5, 4.2) + (len(getPlayers(Team.2)) * 0.02))
             else:
                 # Determine Bot Type
                 if rng <= 100*((pWeight)/totalWeight): # Spawn Pharah
                     createDummy(Hero.PHARAH, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,2)
-                    wait(random.randint(0.4 * 0.75, 2.8 * 0.75) + (len(getPlayers(Team.2)) * 0.06))
+                    wait(random.uniform(0.4 * 0.75, 2.1 * 0.75) + (len(getPlayers(Team.2)) * 0.06))
                 elif rng <= 100*((pWeight+oWeight)/totalWeight): # Spawn Orisa
                     createDummy(Hero.ORISA, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(1.1 * 0.75, 3.5 * 0.75) + (len(getPlayers(Team.2)) * 0.06))
+                    wait(random.uniform(1.1 * 0.75, 2.8 * 0.75) + (len(getPlayers(Team.2)) * 0.06))
                 elif rng <= 100*((pWeight+oWeight+mWeight)/totalWeight): # Spawn Mei
                     createDummy(Hero.MEI, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(1.8 * 0.75, 4.2 * 0.75) + (len(getPlayers(Team.2)) * 0.06))
+                    wait(random.uniform(1.8 * 0.75, 3.5 * 0.75) + (len(getPlayers(Team.2)) * 0.06))
                 elif rng <= 100*((pWeight+oWeight+mWeight+rWeight)/totalWeight): # Spawn Reinhardt
                     createDummy(Hero.REINHARDT, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(2.5 * 0.75, 4.5 * 0.75) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(2.5 * 0.75, 4.2 * 0.75) + (len(getPlayers(Team.2)) * 0.02))
     elif difficulty == 9:
         pWeight = 100
         oWeight = 80
@@ -263,37 +263,37 @@ def GamePhase_SpawnBots():
                 if rng <= 50: # Spawn Pharah
                     createDummy(Hero.PHARAH, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,2)
-                    wait(random.randint(0.2, 2.4) + (len(getPlayers(Team.2)) * 0.04))
+                    wait(random.uniform(0.2, 1.8) + (len(getPlayers(Team.2)) * 0.04))
                 elif rng <= 100*((pWeight+oWeight)/totalWeight): # Spawn Orisa
                     createDummy(Hero.ORISA, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(0.8, 3) + (len(getPlayers(Team.2)) * 0.04))
+                    wait(random.uniform(0.8, 2.4) + (len(getPlayers(Team.2)) * 0.04))
                 elif rng <= 100*((pWeight+oWeight+mWeight)/totalWeight): # Spawn Mei
                     createDummy(Hero.MEI, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(1.4, 3.6) + (len(getPlayers(Team.2)) * 0.04))
+                    wait(random.uniform(1.4, 3) + (len(getPlayers(Team.2)) * 0.04))
                 elif rng <= 100*((pWeight+oWeight+mWeight+rWeight)/totalWeight): # Spawn Reinhardt
                     createDummy(Hero.REINHARDT, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(2, 4) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(2, 3.6) + (len(getPlayers(Team.2)) * 0.02))
             else:
                 # Determine Bot Type
                 if rng <= 100*((pWeight)/totalWeight): # Spawn Pharah
                     createDummy(Hero.PHARAH, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,2)
-                    wait(random.randint(0.2 * 0.75, 2.4 * 0.75) + (len(getPlayers(Team.2)) * 0.04))
+                    wait(random.uniform(0.2 * 0.75, 1.8 * 0.75) + (len(getPlayers(Team.2)) * 0.04))
                 elif rng <= 100*((pWeight+oWeight)/totalWeight): # Spawn Orisa
                     createDummy(Hero.ORISA, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(0.8 * 0.75, 3 * 0.75) + (len(getPlayers(Team.2)) * 0.04))
+                    wait(random.uniform(0.8 * 0.75, 2.4 * 0.75) + (len(getPlayers(Team.2)) * 0.04))
                 elif rng <= 100*((pWeight+oWeight+mWeight)/totalWeight): # Spawn Mei
                     createDummy(Hero.MEI, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(1.4 * 0.75, 3.6 * 0.75) + (len(getPlayers(Team.2)) * 0.04))
+                    wait(random.uniform(1.4 * 0.75, 3 * 0.75) + (len(getPlayers(Team.2)) * 0.04))
                 elif rng <= 100*((pWeight+oWeight+mWeight+rWeight)/totalWeight): # Spawn Reinhardt
                     createDummy(Hero.REINHARDT, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(2 * 0.75, 4 * 0.75) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(2 * 0.75, 3.6 * 0.75) + (len(getPlayers(Team.2)) * 0.02))
     elif difficulty == 10:
         pWeight = 100
         oWeight = 90
@@ -308,34 +308,34 @@ def GamePhase_SpawnBots():
                 if rng <= 100*((pWeight)/totalWeight): # Spawn Pharah
                     createDummy(Hero.PHARAH, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,2)
-                    wait(random.randint(0, 2) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(0, 1.5) + (len(getPlayers(Team.2)) * 0.02))
                 elif rng <= 100*((pWeight+oWeight)/totalWeight): # Spawn Orisa
                     createDummy(Hero.ORISA, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(0.5, 2.5) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(0.5, 2) + (len(getPlayers(Team.2)) * 0.02))
                 elif rng <= 100*((pWeight+oWeight+mWeight)/totalWeight): # Spawn Mei
                     createDummy(Hero.MEI, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(1, 3) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(1, 3) + (len(getPlayers(Team.2)) * 0.02))
                 elif rng <= 100: # Spawn Reinhardt
                     createDummy(Hero.REINHARDT, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(1.5, 3.5) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(1.5, 3) + (len(getPlayers(Team.2)) * 0.02))
             else:
                 # Determine Bot Type
                 if rng <= 100*((pWeight)/totalWeight): # Spawn Pharah
                     createDummy(Hero.PHARAH, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,2)
-                    wait(random.randint(0 * 0.75, 2 * 0.75) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(0 * 0.75, 1.5 * 0.75) + (len(getPlayers(Team.2)) * 0.02))
                 elif rng <= 100*((pWeight+oWeight)/totalWeight): # Spawn Orisa
                     createDummy(Hero.ORISA, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(0.5 * 0.75, 2.5 * 0.75) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(0.5 * 0.75, 2 * 0.75) + (len(getPlayers(Team.2)) * 0.02))
                 elif rng <= 100*((pWeight+oWeight+mWeight)/totalWeight): # Spawn Mei
                     createDummy(Hero.MEI, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(1 * 0.75, 3 * 0.75) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(1 * 0.75, 2.5 * 0.75) + (len(getPlayers(Team.2)) * 0.02))
                 elif rng <= 100*((pWeight+oWeight+mWeight+rWeight)/totalWeight): # Spawn Reinhardt
                     createDummy(Hero.REINHARDT, Team.2, -1, vect(0,50,0), vect(0,0,0))
                     getLastCreatedEntity().enemyType = random.randint(0,1)
-                    wait(random.randint(1.5 * 0.75, 3.5 * 0.75) + (len(getPlayers(Team.2)) * 0.02))
+                    wait(random.uniform(1.5 * 0.75, 3 * 0.75) + (len(getPlayers(Team.2)) * 0.02))
