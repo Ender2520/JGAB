@@ -68,7 +68,7 @@ rule "[Enemies] Initialize":
         if eventPlayer.enemyType == 0:
             eventPlayer.setDamageDealt(1)
             eventPlayer.startForcingName("Groundbreaker")
-            Enemy_Groundbreaker()
+            Enemy_Shatter()
         elif eventPlayer.enemyType == 1:
             eventPlayer.setDamageDealt(1)
             eventPlayer.startForcingName("Charger")

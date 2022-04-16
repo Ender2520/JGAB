@@ -1,6 +1,6 @@
 #!mainFile "../main.opy"
 
-def Enemy_Groundbreaker():
+def Enemy_Shatter():
     eventPlayer.botPosition = vect(19 if random.randint(-4,4)+((getPlayersInSlot(0, Team.1).getPosition().x+getPlayersInSlot(1, Team.1).getPosition().x+getPlayersInSlot(2, Team.1).getPosition().x+getPlayersInSlot(3, Team.1).getPosition().x)/len(getLivingPlayers(Team.1))) > 0 else -19, 20, 0)
     eventPlayer.teleport(eventPlayer.botPosition)
     eventPlayer.startFacing(directionTowards(eventPlayer, vect(0,0,0)), 9999, Relativity.TO_WORLD, FacingReeval.DIRECTION_AND_TURN_RATE)
