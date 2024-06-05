@@ -156,7 +156,7 @@ rule "[Movement] A1 Dash Effects":
         playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.GREEN, eventPlayer.getPosition(), 1)
         wait(0.032)
     eventPlayer.usingAbility1REAL = false
-    eventPlayer.a1cooldownPATCH = 2
+    eventPlayer.a1cooldownPATCH = 4
     
 rule "[Movement] A1 Blink":
     @Event eachPlayer
@@ -201,7 +201,7 @@ rule "[Movement] A2 Cancel Deflect Early*":
     @Condition eventPlayer.isUsingAbility2()
 
     eventPlayer.usingAbility2REAL = true
-    waitUntil(eventPlayer.isUsingAbility2() != true, 9999)
+    waitUntil(eventPlayer.isUsingAbility2() != true, 2)
     if eventPlayer.isUsingAbility2():
         eventPlayer.forceButtonPress(Button.ABILITY_2)
     eventPlayer.usingAbility2REAL = false
@@ -228,7 +228,7 @@ rule "[Movement] A2 Harden":
     destroyEffect(eventPlayer.abilityEffects[1])
     wait(0.4)
     eventPlayer.usingAbility2REAL = false
-    eventPlayer.setAbilityCooldown(Button.ABILITY_2, 5)
+    eventPlayer.setAbilityCooldown(Button.ABILITY_2, 4)
 
 rule "[Movement] Ult Eradication":
     @Event eachPlayer
