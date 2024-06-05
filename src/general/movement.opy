@@ -19,16 +19,22 @@ rule "[Movement] Initialize":
     eventPlayer.disableDeathSpectateAllPlayers()
     eventPlayer.startTransformingThrottle(1, 0.001, newBackward * -1)
     eventPlayer.startFacing(eventPlayer.faceDirection, 9999, Relativity.TO_WORLD, FacingReeval.DIRECTION_AND_TURN_RATE)
+    eventPlayer.startForcingHero(Hero.GENJI)
     eventPlayer.faceDirection = Vector.RIGHT
-    
+
 rule "[Movement] On Spawn":
     @Event eachPlayer
     @Condition eventPlayer.hasSpawned() == true
     @Condition eventPlayer.isDummy() == false
 
-    #if roundUnderway:
-    #    kill(eventPlayer, null)
-    #else:
+    if roundUnderway:
+        kill(eventPlayer, null)
+    else:
+        eventPlayer.livesColor = Color.GREEN
+        eventPlayer.a1Choice = 1
+        eventPlayer.a2Choice = 1
+        eventPlayer.ultChoice = 1
+        chase(eventPlayer.a1cooldownPATCH, 0, rate=1, ChaseReeval.DESTINATION_AND_RATE)
         eventPlayer.setMaxHealth(9999)
         eventPlayer.setHealth(99999)
         if not chaosMode:
@@ -36,18 +42,18 @@ rule "[Movement] On Spawn":
         else:
             eventPlayer.lives[0] = 1
         eventPlayer.lives[1] = eventPlayer.lives[0]
-        eventPlayer.startCamera(raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + newBackward * 20 + Vector.UP * 2, null, null, false).getHitPosition(), eventPlayer.getEyePosition() + Vector.UP, 7.5)
+        eventPlayer.startCamera(raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + newBackward * 20 + Vector.UP * 3, null, null, false).getHitPosition(), eventPlayer.getEyePosition() + Vector.UP * 3, 7.5)
         createProgressBarInWorldText(eventPlayer, (eventPlayer.lives[0] / eventPlayer.lives[1]) * 100, "", updateEveryTick(eventPlayer.getPosition()+ Vector.DOWN * 5), 1, Clip.NONE, eventPlayer.livesColor, Color.WHITE, ProgressWorldTextReeval.VISIBILITY_POSITION_VALUES_AND_COLOR, SpecVisibility.DEFAULT)
+        eventPlayer.teleport(vect(18,0,0))
 
-rule "[Movement] Color Updating (Outline & Healthbar":
+rule "[Movement] Color Updating (Outline & Healthbar)":
     @Event eachPlayer
     @Condition eventPlayer.hasSpawned() == true
     @Condition eventPlayer.isDummy() == false
     @Condition eventPlayer.lives[0] != null
 
-    eventPlayer.livesColor = Color.GREEN
+    wait(0.128)
     eventPlayer.startForcingOutlineFor(getAllPlayers(), true, eventPlayer.livesColor, OutlineVisibility.ALWAYS)
-    wait()
     if eventPlayer.lives[1] == 5:
         waitUntil(eventPlayer.lives[0] == 4, 9999)
         eventPlayer.livesColor = rgb(120,235,50)
@@ -129,42 +135,160 @@ rule "[Movement] Change Facing Direction":
     eventPlayer.startFacing(eventPlayer.faceDirection, 99999, Relativity.TO_WORLD, FacingReeval.DIRECTION_AND_TURN_RATE)
     wait()
 
-rule "[Movement] Use Dash":
+rule "[Movement] A1 Use Dash":
     @Event eachPlayer
     @Condition ability1Enabled
+    @Condition eventPlayer.a1Choice == 1
     @Condition eventPlayer.isHoldingButton(Button.ABILITY_1)
+    @Condition eventPlayer.a1cooldownPATCH <= 0
 
-    if not eventPlayer.isHoldingButton(Button.SECONDARY_FIRE):
-        eventPlayer.allowButton(Button.ABILITY_1)
-        eventPlayer.forceButtonPress(Button.ABILITY_1)
-        eventPlayer.disallowButton(Button.ABILITY_1)
+    eventPlayer.allowButton(Button.ABILITY_1)
+    eventPlayer.forceButtonPress(Button.ABILITY_1)
+    eventPlayer.disallowButton(Button.ABILITY_1)
 
-rule "[Movement] Use Deflect":
+rule "[Movement] A1 Dash Effects":
+    @Event eachPlayer
+    @Hero genji
+    @Condition eventPlayer.isUsingAbility1()
+
+    eventPlayer.usingAbility1REAL = true
+    while eventPlayer.isUsingAbility1():
+        playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.GREEN, eventPlayer.getPosition(), 1)
+        wait(0.032)
+    eventPlayer.usingAbility1REAL = false
+    eventPlayer.a1cooldownPATCH = 2
+    
+rule "[Movement] A1 Blink":
+    @Event eachPlayer
+    @Hero genji
+    @Condition ability1Enabled
+    @Condition eventPlayer.a1Choice == 4
+    @Condition eventPlayer.isHoldingButton(Button.ABILITY_1)
+    @Condition eventPlayer.a1cooldownPATCH <= 0
+    #@Condition eventPlayer.getAbilityCooldown(Button.ABILITY_1) <= 0
+    @Condition eventPlayer.usingAbility1REAL != true
+
+    eventPlayer.usingAbility1REAL = true
+    eventPlayer.setStatusEffect(null, Status.INVINCIBLE, 1)
+    playEffect(getAllPlayers(), DynamicEffect.REAPER_WRAITH_FORM_SOUND, Color.SKY_BLUE, eventPlayer.getPosition(), 100)
+    playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.SKY_BLUE, eventPlayer.getEyePosition(), 1)
+    wait(0.1)
+    eventPlayer.teleport(raycast(eventPlayer.getPosition(), eventPlayer.getPosition() + eventPlayer.getFacingDirection() * 8, null, getAllPlayers(), false).getHitPosition())
+    playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.SKY_BLUE, eventPlayer.getEyePosition(), 1)
+    playEffect(getAllPlayers(), DynamicEffect.DVA_MICRO_MISSILES_EXPLOSION_SOUND, Color.SKY_BLUE, eventPlayer.getPosition(), 100)
+    eventPlayer.applyImpulse(Vector.UP, 3, Relativity.TO_PLAYER, Impulse.CANCEL_CONTRARY_MOTION)
+    eventPlayer.clearStatusEffect(Status.INVINCIBLE)
+    wait(0.4)
+    eventPlayer.usingAbility1REAL = false
+    eventPlayer.a1cooldownPATCH = 3
+    #eventPlayer.setAbilityCooldown(Button.ABILITY_1, 3)
+
+rule "[Movement] A2 Use Deflect":
     @Event eachPlayer
     @Condition ability2Enabled
+    @Condition eventPlayer.a2Choice == 1
     @Condition eventPlayer.isHoldingButton(Button.ABILITY_2)
+    @Condition eventPlayer.isAlive()
 
     if not eventPlayer.isHoldingButton(Button.SECONDARY_FIRE):
         eventPlayer.allowButton(Button.ABILITY_2)
         eventPlayer.forceButtonPress(Button.ABILITY_2)
         eventPlayer.disallowButton(Button.ABILITY_2)
 
-rule "[Movement] Cancel Deflect Early":
+rule "[Movement] A2 Cancel Deflect Early*":
     @Event eachPlayer
     @Hero genji
     @Condition eventPlayer.isUsingAbility2()
 
-    wait(1, Wait.ABORT_WHEN_FALSE)
-    eventPlayer.forceButtonPress(Button.ABILITY_2)
+    eventPlayer.usingAbility2REAL = true
+    waitUntil(eventPlayer.isUsingAbility2() != true, 9999)
+    if eventPlayer.isUsingAbility2():
+        eventPlayer.forceButtonPress(Button.ABILITY_2)
+    eventPlayer.usingAbility2REAL = false
 
-rule "[Movement] Dash Effects":
+rule "[Movement] A2 Harden":
     @Event eachPlayer
     @Hero genji
-    @Condition eventPlayer.isUsingAbility1()
+    @Condition ability2Enabled
+    @Condition eventPlayer.a2Choice == 4
+    @Condition eventPlayer.isHoldingButton(Button.ABILITY_2)
+    @Condition eventPlayer.getAbilityCooldown(Button.ABILITY_2) <= 0
+    @Condition eventPlayer.usingAbility2REAL != true
+    @Condition eventPlayer.isAlive()
 
-    while eventPlayer.isUsingAbility1():
-        playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.GREEN, eventPlayer.getPosition(), 1)
-        wait(0.032)
+    eventPlayer.usingAbility2REAL = true
+    playEffect(getAllPlayers(), DynamicEffect.BAPTISTE_BIOTIC_LAUNCHER_EXPLOSION_SOUND, Color.SKY_BLUE, eventPlayer.getPosition(), 100)
+    playEffect(getAllPlayers(), DynamicEffect.WRECKING_BALL_MINEFIELD_EXPLOSION_SOUND, Color.SKY_BLUE, eventPlayer.getEyePosition(), 1)
+    createEffect(getAllPlayers(), Effect.BAPTISTE_IMMORTALITY_FIELD_PROTECTED, Color.WHITE, eventPlayer, 1, EffectReeval.VISIBILITY)
+    eventPlayer.abilityEffects[0] = getLastCreatedEntity()
+    createEffect(getAllPlayers(), Effect.BAPTISTE_IMMORTALITY_FIELD_PROTECTED_SOUND, Color.WHITE, eventPlayer.getPosition(), 60, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    eventPlayer.abilityEffects[1] = getLastCreatedEntity()
+    wait(1)
+    destroyEffect(eventPlayer.abilityEffects[0])
+    destroyEffect(eventPlayer.abilityEffects[1])
+    wait(0.4)
+    eventPlayer.usingAbility2REAL = false
+    eventPlayer.setAbilityCooldown(Button.ABILITY_2, 5)
+
+rule "[Movement] Ult Eradication":
+    @Event eachPlayer
+    @Condition ultimateEnabled
+    @Condition eventPlayer.ultChoice == 1
+    @Condition eventPlayer.ultCharge == 100
+    @Condition eventPlayer.isHoldingButton(Button.ULTIMATE)
+    @Condition eventPlayer.getUltCharge() == 100 
+    @Condition not eventPlayer.hasStatusEffect(Status.STUNNED) and not eventPlayer.hasStatusEffect(Status.FROZEN) and not eventPlayer.hasStatusEffect(Status.HACKED)
+    @Condition eventPlayer.isAlive()
+    @Condition roundUnderway
+
+    playEffect(getAllPlayers(), DynamicEffect.DVA_SELF_DESTRUCT_EXPLOSION_SOUND, Color.TEAM_1, eventPlayer.getPosition(), 200)
+    playEffect(getAllPlayers(), DynamicEffect.BASTION_TANK_CANNON_EXPLOSION_SOUND, Color.TEAM_1, eventPlayer.getPosition(), 200)
+    playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.GREEN, eventPlayer.getPosition(), 20)
+    playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.AQUA, eventPlayer.getPosition(), 25)
+    playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.GREEN, eventPlayer.getPosition(), 30)
+    playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.AQUA, eventPlayer.getPosition(), 35)
+    playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.GREEN, eventPlayer.getPosition(), 40)
+    playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.AQUA, eventPlayer.getPosition(), 45)
+    eventPlayer.usingUltimateREAL = true
+    stopChasingVariable(eventPlayer.ultCharge)
+    eventPlayer.ultCharge = 0
+    eventPlayer.setUltCharge(0)
+    kill(getPlayers(Team.2), eventPlayer)
+    wait(2)
+    eventPlayer.usingUltimateREAL = false
+    chase(eventPlayer.ultCharge, 100, rate=3.333, ChaseReeval.NONE)
+
+rule "[Movement] Ult Slo-Mo":
+    @Event eachPlayer
+    @Condition ultimateEnabled
+    @Condition eventPlayer.ultChoice == 4
+    @Condition eventPlayer.ultCharge == 100
+    @Condition eventPlayer.isHoldingButton(Button.ULTIMATE)
+    @Condition eventPlayer.getUltCharge() == 100 
+    @Condition len([p for p in getPlayers(eventPlayer.getTeam()) if p.usingUltimateREAL == true and p.ultChoice == 4 and p != eventPlayer]) == 0
+    @Condition not eventPlayer.hasStatusEffect(Status.STUNNED) and not eventPlayer.hasStatusEffect(Status.FROZEN) and not eventPlayer.hasStatusEffect(Status.HACKED)
+    @Condition eventPlayer.isAlive()
+    @Condition roundUnderway
+    
+    eventPlayer.usingUltimateREAL = true
+    stopChasingVariable(eventPlayer.ultCharge)
+    eventPlayer.ultCharge = 0
+    eventPlayer.setUltCharge(0)
+    createEffect(getAllPlayers(), Effect.SPHERE, Color.BLUE, eventPlayer.getPosition(), eventPlayer.effectRadius, EffectReeval.VISIBILITY_POSITION_RADIUS_AND_COLOR)
+    eventPlayer.abilityEffects[2] = getLastCreatedEntity()
+    createEffect(getAllPlayers(), Effect.SPHERE, Color.SKY_BLUE, eventPlayer.getPosition(), eventPlayer.effectRadius - 2, EffectReeval.VISIBILITY_POSITION_RADIUS_AND_COLOR)
+    eventPlayer.abilityEffects[3] = getLastCreatedEntity()
+    chase(eventPlayer.effectRadius, 100, duration=1, ChaseReeval.NONE)
+    playEffect(getAllPlayers(), DynamicEffect.SOMBRA_EMP_EXPLOSION_SOUND, Color.TEAM_1, eventPlayer.getPosition(), 50)
+    playEffect(getAllPlayers(), DynamicEffect.TRACER_RECALL_DISAPPEAR_SOUND, Color.WHITE, eventPlayer.getPosition(), 100)
+    setSlowMotion(50)
+    wait(4)
+    chase(eventPlayer.effectRadius, 0, duration=0.5, ChaseReeval.NONE)
+    playEffect(getAllPlayers(), DynamicEffect.WRECKING_BALL_MINEFIELD_EXPLOSION_SOUND, Color.TEAM_1, eventPlayer.getPosition(), 50)
+    playEffect(getAllPlayers(), DynamicEffect.TRACER_RECALL_REAPPEAR_SOUND, Color.WHITE, eventPlayer.getPosition(), 100)
+    setSlowMotion(100)
+    eventPlayer.usingUltimateREAL = false
+    chase(eventPlayer.ultCharge, 100, rate=3.333, ChaseReeval.NONE)
 
 rule "[Movement] Ultimate Charge Loop":
     @Event eachPlayer
@@ -185,38 +309,40 @@ rule "[Movement] Remove Ultimate Generation on Damage":
     @Condition ultimateEnabled
     @Condition eventDamage >= 100
     @Condition not eventPlayer.isUsingAbility1()
+    @Condition (victim.usingAbility2REAL == true and victim.a2Choice == 4) != true
     @Condition eventPlayer.isAlive()
     @Condition roundUnderway
 
     stopChasingVariable(eventPlayer.ultCharge)
     eventPlayer.ultCharge = 0
     eventPlayer.setUltCharge(eventPlayer.ultCharge)
-    wait(2)
+    wait(3)
     chase(eventPlayer.ultCharge, 100, rate=3.333, ChaseReeval.NONE)
 
-rule "[Movement] Ultimate Eliminate Enemies":
+rule "[Movement] Switch Ability Selection":
     @Event eachPlayer
-    @Condition ultimateEnabled
-    @Condition eventPlayer.isHoldingButton(Button.ULTIMATE)
-    @Condition eventPlayer.getUltCharge() == 100 
-    @Condition not eventPlayer.isHoldingButton(Button.SECONDARY_FIRE)
-    @Condition eventPlayer.isAlive()
-    @Condition roundUnderway
-    @Condition not eventPlayer.hasStatusEffect(Status.STUNNED) and not eventPlayer.hasStatusEffect(Status.FROZEN) and not eventPlayer.hasStatusEffect(Status.HACKED)
-    
-    playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.TEAM_1, eventPlayer.getPosition(), 200)
-    playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.TEAM_1, eventPlayer.getPosition(), 200)
-    playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.GREEN, eventPlayer.getPosition(), 20)
-    playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.AQUA, eventPlayer.getPosition(), 25)
-    playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.GREEN, eventPlayer.getPosition(), 30)
-    playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.AQUA, eventPlayer.getPosition(), 35)
-    playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.GREEN, eventPlayer.getPosition(), 40)
-    playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.AQUA, eventPlayer.getPosition(), 45)
-    eventPlayer.usingUltimateREAL = true
-    stopChasingVariable(eventPlayer.ultCharge)
-    eventPlayer.ultCharge = 0
-    eventPlayer.setUltCharge(0)
-    kill(getPlayers(Team.2), eventPlayer)
-    wait(2)
-    eventPlayer.usingUltimateREAL = false
-    chase(eventPlayer.ultCharge, 100, rate=3.333, ChaseReeval.NONE)
+    @Condition roundUnderway != true
+    @Condition eventPlayer.isHoldingButton(Button.INTERACT)
+    @Condition distance(eventPlayer.getPosition() * vect(1,0,1), vect(12,0,0)) <= 2 or distance(eventPlayer.getPosition() * vect(1,0,1), vect(4,0,0)) <= 2 or distance(eventPlayer.getPosition() * vect(1,0,1), vect(-4,0,0)) <= 2
+
+    playEffect(eventPlayer, DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, eventPlayer, 50)
+    if distance(eventPlayer.getPosition() * vect(1,0,1), vect(12,0,0)) <= 2:
+        playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.WHITE, vect(12,0,0), 5)
+        if abilityNames[(eventPlayer.a1Choice*1)+3] == null:
+            eventPlayer.a1Choice = 1
+        else:
+            eventPlayer.a1Choice += 3 
+    if distance(eventPlayer.getPosition() * vect(1,0,1), vect(4,0,0)) <= 2:
+        playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.WHITE, vect(4,0,0), 5)
+        if abilityNames[(eventPlayer.a2Choice*2)+3] == null:
+            eventPlayer.a2Choice = 1
+        else:
+            eventPlayer.a2Choice += 3 
+    if distance(eventPlayer.getPosition() * vect(1,0,1), vect(-4,0,0)) <= 2:
+        playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.WHITE, vect(-4,0,0), 5)
+        if abilityNames[(eventPlayer.ultChoice*3)+3] == null:
+            eventPlayer.ultChoice = 1
+        else:
+            eventPlayer.ultChoice += 3 
+
+

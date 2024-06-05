@@ -1,5 +1,3 @@
-#!mainFile "main.opy"
-
 settings {
     "main": {
         "description": "Team up with up to 3 of your friends in an attempt to beat this bullet hell gamemode | The higher difficulty the more enemies you will encounter, and the more chaotic the game will become. | Created by u/Ender / v1.0.3",
@@ -21,7 +19,7 @@ settings {
             "heroLimit": "off",
             "enableKillCam": false,
             "enableKillFeed": false,
-            "scoreToWin": 1,
+            "scoreToWin": 1
         }
     },
     "heroes": {
@@ -31,7 +29,7 @@ settings {
                 "enableMelee": false,
                 "enableSecondaryFire": false,
                 "ability1Cooldown%": 25,
-                "ability2Cooldown%": 25,
+                "ability2Cooldown%": 25
             },
             "mei": {
                 "primaryFireFreezeDuration%": 50,

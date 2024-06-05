@@ -10,7 +10,6 @@ def Enemy_Shatter():
     eventPlayer.botEffect[1] = getLastCreatedEntity()
     eventPlayer.stopForcingPosition()
     wait()
-    eventPlayer.startScalingSize(0.94, false)
     eventPlayer.forceButtonPress(Button.ULTIMATE)
     eventPlayer.applyImpulse(Vector.DOWN, chaos(40) difficulty*3, Relativity.TO_PLAYER, Impulse.CANCEL_CONTRARY_MOTION)
     waitUntil(eventPlayer.isOnGround(), 9999)
@@ -22,7 +21,7 @@ def Enemy_Shatter():
 def Enemy_Charge():
     eventPlayer.stopFacing()
     eventPlayer.stopForcingThrottle()
-    eventPlayer.botPosition = vect(sorted([-18,-14,-10,-6,-2,2,6,10,14,18], lambda x: distance(vect(x,0,0), vect(random.choice(getLivingPlayers(Team.1)).getPosition().x + random.randint(-4,4),0,0)))[0], 1, 19.5)
+    eventPlayer.botPosition = vect(sorted([-18,-14,-10,-6,-2,2,6,10,14,18], lambda x: distance(vect(x,0,0), vect(random.choice(getLivingPlayers(Team.1)).getPosition().x + random.randint(-2,2),0,0)))[0], 1, 19.5)
     wait()
     eventPlayer.teleport(eventPlayer.botPosition)
     eventPlayer.startFacing(directionTowards(eventPlayer, vect(eventPlayer.botPosition.x,eventPlayer.botPosition.y,eventPlayer.botPosition.z * -1)), 9999, Relativity.TO_WORLD, FacingReeval.DIRECTION_AND_TURN_RATE)
