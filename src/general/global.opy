@@ -12,7 +12,7 @@ rule "[Global] Global 1":
     chaosMode = createWorkshopSetting(bool, "Extra Modes", "Chaos Mode (overrides all customizable settings)", false, 6) == true:
     point[0] = vect(-20, false, false)
     point[1] = vect(20, false, false)
-    camDirection = Vector.UP
+    camDirection = Vector.DOWN
     wait(false)
     x[0] = point[0].x
     x[1] = point[1].x
