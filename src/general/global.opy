@@ -94,6 +94,17 @@ rule "[Global] Global 1":
     readyFX[8] = getLastCreatedText()
     createInWorldText(getAllPlayers(), "[{0}]".format(Button.INTERACT), vect(4, 2, 0), 0.75, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.WHITE, SpecVisibility.DEFAULT)
     readyFX[9] = getLastCreatedText()
+    #---ULTIMATE---
+    createEffect(getAllPlayers(), Effect.RING, Color.WHITE, vect(-4, 0, 0), 2.5, EffectReeval.VISIBILITY_AND_COLOR)
+    readyFX[5] = getLastCreatedEntity()
+    createEffect(getAllPlayers(), Effect.LIGHT_SHAFT, Color.WHITE, vect(-4, -24, 0), 2.5, EffectReeval.VISIBILITY_AND_COLOR)
+    readyFX[6] = getLastCreatedEntity()
+    createInWorldText(getAllPlayers(), abilityIcons[(localPlayer.ultChoice)+2], vect(-4, 3.5, 0), 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.WHITE, SpecVisibility.DEFAULT)
+    readyFX[7] = getLastCreatedText()
+    createInWorldText(getAllPlayers(), abilityNames[(localPlayer.ultChoice)+2], vect(-4, 2.5, 0), 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.WHITE, SpecVisibility.DEFAULT)
+    readyFX[8] = getLastCreatedText()
+    createInWorldText(getAllPlayers(), "[{0}]".format(Button.INTERACT), vect(-4, 2, 0), 0.75, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.WHITE, SpecVisibility.DEFAULT)
+    readyFX[9] = getLastCreatedText()
     #Player Health Bar
     wait(1)
     #Wait Until Grouped Up
