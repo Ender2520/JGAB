@@ -38,7 +38,7 @@ rule "[Movement] On Spawn":
         eventPlayer.setMaxHealth(9999)
         eventPlayer.setHealth(99999)
         if not chaosMode:
-            eventPlayer.lives[0] = createWorkshopSetting(int[1:5], "Customization", "Player Health", 3, 2)
+            eventPlayer.lives[0] = createWorkshopSetting(int[1:5], "Customization", "Player Health", 5, 2)
         else:
             eventPlayer.lives[0] = 1
         eventPlayer.lives[1] = eventPlayer.lives[0]
@@ -173,7 +173,7 @@ rule "[Movement] A1 Blink":
     playEffect(getAllPlayers(), DynamicEffect.REAPER_WRAITH_FORM_SOUND, Color.SKY_BLUE, eventPlayer.getPosition(), 100)
     playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.SKY_BLUE, eventPlayer.getEyePosition(), 1)
     wait(0.1)
-    eventPlayer.teleport(raycast(eventPlayer.getPosition(), eventPlayer.getPosition() + eventPlayer.getFacingDirection() * 8, null, getAllPlayers(), false).getHitPosition())
+    eventPlayer.teleport(raycast(eventPlayer.getPosition(), eventPlayer.getPosition() + eventPlayer.getFacingDirection() * 10, null, getAllPlayers(), false).getHitPosition())
     playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.SKY_BLUE, eventPlayer.getEyePosition(), 1)
     playEffect(getAllPlayers(), DynamicEffect.DVA_MICRO_MISSILES_EXPLOSION_SOUND, Color.SKY_BLUE, eventPlayer.getPosition(), 100)
     eventPlayer.applyImpulse(Vector.UP, 3, Relativity.TO_PLAYER, Impulse.CANCEL_CONTRARY_MOTION)
@@ -218,16 +218,17 @@ rule "[Movement] A2 Harden":
 
     eventPlayer.usingAbility2REAL = true
     playEffect(getAllPlayers(), DynamicEffect.BAPTISTE_BIOTIC_LAUNCHER_EXPLOSION_SOUND, Color.SKY_BLUE, eventPlayer.getPosition(), 100)
-    playEffect(getAllPlayers(), DynamicEffect.WRECKING_BALL_MINEFIELD_EXPLOSION_SOUND, Color.SKY_BLUE, eventPlayer.getEyePosition(), 1)
     createEffect(getAllPlayers(), Effect.BAPTISTE_IMMORTALITY_FIELD_PROTECTED, Color.WHITE, eventPlayer, 1, EffectReeval.VISIBILITY)
     eventPlayer.abilityEffects[0] = getLastCreatedEntity()
-    createEffect(getAllPlayers(), Effect.BAPTISTE_IMMORTALITY_FIELD_PROTECTED_SOUND, Color.WHITE, eventPlayer.getPosition(), 60, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers(), Effect.BAPTISTE_IMMORTALITY_FIELD_PROTECTED_SOUND, Color.WHITE, eventPlayer.getPosition(), 30, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     eventPlayer.abilityEffects[1] = getLastCreatedEntity()
-    wait(1)
+    eventPlayer.setKnockbackReceived(10)
+    wait(2)
     destroyEffect(eventPlayer.abilityEffects[0])
     destroyEffect(eventPlayer.abilityEffects[1])
     wait(0.4)
     eventPlayer.usingAbility2REAL = false
+    eventPlayer.setKnockbackReceived(100)
     eventPlayer.setAbilityCooldown(Button.ABILITY_2, 4)
 
 rule "[Movement] Ult Eradication":
@@ -328,12 +329,14 @@ rule "[Movement] Switch Ability Selection":
     playEffect(eventPlayer, DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, eventPlayer, 50)
     if distance(eventPlayer.getPosition() * vect(1,0,1), vect(12,0,0)) <= 2:
         playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.WHITE, vect(12,0,0), 5)
+        eventPlayer.a1cooldownPATCH = 0
         if abilityNames[(eventPlayer.a1Choice*1)+3] == null:
             eventPlayer.a1Choice = 1
         else:
             eventPlayer.a1Choice += 3 
     if distance(eventPlayer.getPosition() * vect(1,0,1), vect(4,0,0)) <= 2:
         playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.WHITE, vect(4,0,0), 5)
+        eventPlayer.setAbilityCooldown(Button.ABILITY_2, 0)
         if abilityNames[(eventPlayer.a2Choice*2)+3] == null:
             eventPlayer.a2Choice = 1
         else:

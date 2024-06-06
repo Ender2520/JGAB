@@ -25,12 +25,11 @@ rule "[Global] Global 1":
     newBackward = crossProduct(camDirection, direction2D)
     abilityNames = [null,"Dash","Deflect","Eradication","Blink","Harden","Slo-Mo"]
     abilityDescriptions = [null, "Dash in the direction you are facing. Gain damage immunity and ultimate charge for each projectile hit", "Deflect any incoming projectiles that are in front of you.", "Immediately destroy all enemies and projectiles.", "Blink","Harden","Slo-Mo"]
-    abilityIcons = [null, abilityIconString(Hero.GENJI, Button.ABILITY_1), abilityIconString(Hero.GENJI, Button.ABILITY_2), iconString(Icon.POISON_2), abilityIconString(Hero.TRACER, Button.ABILITY_1), abilityIconString(Hero.BRIGITTE, Button.SECONDARY_FIRE), abilityIconString(Hero.LUCIO, Button.ABILITY_2)]
+    abilityIcons = [null, abilityIconString(Hero.GENJI, Button.ABILITY_1), abilityIconString(Hero.GENJI, Button.ABILITY_2), abilityIconString(Hero.ILLARI, Button.ABILITY_1), abilityIconString(Hero.TRACER, Button.ABILITY_1), abilityIconString(Hero.BRIGITTE, Button.SECONDARY_FIRE), abilityIconString(Hero.LUCIO, Button.ABILITY_2)]
     #Hud
     progressBarHud(getAllPlayers() if roundUnderway else null, getMatchTime() / roundLength * 100, roundStatus, HudPosition.TOP, 5, Color.BLACK if chaosMode else Color.AQUA if getMatchTime() >= roundLength - 15 else Color.WHITE if getMatchTime() >= roundLength * 0.5 else Color.RED, Color.BLACK if chaosMode else Color.AQUA if getMatchTime() >= roundLength - 15 else Color.WHITE if getMatchTime() >= roundLength * 0.5 else Color.RED, ProgressHudReeval.VISIBILITY_VALUES_AND_COLOR, SpecVisibility.DEFAULT)
     hudSubheader(getAllPlayers(), "J.G.A.B. Just Genji and Beats | v1.0.3", HudPosition.RIGHT, 1, Color.WHITE, HudReeval.VISIBILITY, SpecVisibility.DEFAULT)
     hudSubheader(getAllPlayers(), "Created by u/Ender | Code: 9WATM \n", HudPosition.RIGHT, 2, Color.WHITE, HudReeval.VISIBILITY, SpecVisibility.DEFAULT)
-    hudText(getAllPlayers(), "Discord", "Join for Updates and to Give Feedback", "bit.ly/ENDERSWORKSHOP (all caps)", HudPosition.RIGHT, 4, rgb(188, 103, 245), rgb(243, 224, 255), rgb(243, 224, 255), HudReeval.VISIBILITY, SpecVisibility.DEFAULT)
     createInWorldText(null if roundUnderway else getAllPlayers(), "Just Genjis and Beats", vect(0, 12, 19.5), 4, Clip.SURFACES, WorldTextReeval.VISIBILITY_AND_POSITION, Color.GREEN, SpecVisibility.ALWAYS)
     createInWorldText(null if roundUnderway else getAllPlayers(), "Created by u/Ender | Code: 9WATM", vect(0, 10, 19.5), 1.8, Clip.SURFACES, WorldTextReeval.VISIBILITY_AND_POSITION, Color.WHITE, SpecVisibility.ALWAYS)
     createInWorldText(null if roundUnderway else getAllPlayers(), "The Game", vect(10, 7, 19.5), 2.5, Clip.SURFACES, WorldTextReeval.VISIBILITY_AND_POSITION, Color.GREEN, SpecVisibility.ALWAYS)
@@ -53,7 +52,10 @@ rule "[Global] Global 1":
     hudText(getAllPlayers(), "{0}".format(abilityIcons[(localPlayer.a2Choice)+1]), abilityNames[(localPlayer.a2Choice)+1], "--Disabled--" if ability2Enabled != true else "Ready" if localPlayer.getAbilityCooldown(Button.ABILITY_2) == 0 else localPlayer.getAbilityCooldown(Button.ABILITY_2), HudPosition.LEFT, 9, colordisabled if ability2Enabled != true else Color.YELLOW if localPlayer.usingAbility2REAL else Color.RED if localPlayer.getAbilityCooldown(Button.ABILITY_2) > 0 else Color.WHITE, colordisabled if ability2Enabled != true else Color.YELLOW if localPlayer.usingAbility2REAL else Color.RED if localPlayer.getAbilityCooldown(Button.ABILITY_2) > 0 else Color.WHITE, colordisabled if ability2Enabled != true else Color.YELLOW if localPlayer.usingAbility2REAL else Color.RED if localPlayer.getAbilityCooldown(Button.ABILITY_2) > 0 else Color.WHITE, HudReeval.VISIBILITY_SORT_ORDER_STRING_AND_COLOR, SpecVisibility.DEFAULT)
     hudText(getAllPlayers(), "{0}".format(abilityIcons[(localPlayer.ultChoice)+2]), abilityNames[(localPlayer.ultChoice)+2], "--Disabled--" if ultimateEnabled != true else "Ready" if localPlayer.ultCharge == 100 else "{0}%".format(round(localPlayer.ultCharge)), HudPosition.LEFT, 10, colordisabled if ultimateEnabled != true else Color.YELLOW if localPlayer.usingUltimateREAL == true else Color.BLACK if roundUnderway and localPlayer.ultCharge == 0 else rgb(200 + 55 * (localPlayer.ultCharge / 100), 255 * (localPlayer.ultCharge / 100), 19 - 19 * (localPlayer.ultCharge / 100)) if localPlayer.ultCharge != 100 else Color.WHITE, colordisabled if ultimateEnabled != true else Color.YELLOW if localPlayer.usingUltimateREAL == true else Color.BLACK if roundUnderway and localPlayer.ultCharge == 0 else rgb(200 + 55 * (localPlayer.ultCharge / 100), 255 * (localPlayer.ultCharge / 100), 19 - 19 * (localPlayer.ultCharge / 100)) if localPlayer.ultCharge != 100 else Color.WHITE, colordisabled if ultimateEnabled != true else Color.YELLOW if localPlayer.usingUltimateREAL == true else Color.BLACK if roundUnderway and localPlayer.ultCharge == 0 else rgb(200 + 55 * (localPlayer.ultCharge / 100), 255 * (localPlayer.ultCharge / 100), 19 - 19 * (localPlayer.ultCharge / 100)) if localPlayer.ultCharge != 100 else Color.WHITE, HudReeval.VISIBILITY_SORT_ORDER_STRING_AND_COLOR, SpecVisibility.DEFAULT)
     
-    hudHeader(getAllPlayers(), "{0} | {1} | {2} | {3}".format(spawnDelay(Hero.PHARAH),spawnDelay(Hero.PHARAH),spawnDelay(Hero.PHARAH),spawnDelay(Hero.PHARAH)), HudPosition.TOP, 0, Color.RED, HudReeval.VISIBILITY_SORT_ORDER_STRING_AND_COLOR)
+    ### TESTING ###### TESTING ###### TESTING ###### TESTING ###### TESTING ###### TESTING ###### TESTING ###
+    #hudHeader(getAllPlayers(), "{0} | {1} | {2} | {3}".format(spawnDelay(Hero.PHARAH),spawnDelay(Hero.PHARAH),spawnDelay(Hero.PHARAH),spawnDelay(Hero.PHARAH)), HudPosition.TOP, 0, Color.RED, HudReeval.VISIBILITY_SORT_ORDER_STRING_AND_COLOR)
+    ### TESTING ###### TESTING ###### TESTING ###### TESTING ###### TESTING ###### TESTING ###### TESTING ###
+    
     /*
     hudSubheader(getAllPlayers(), "Press ({0}) to see ability details.".format(buttonString(Button.SECONDARY_FIRE)), HudPosition.LEFT, 7, Color.WHITE, HudReeval.VISIBILITY_SORT_ORDER_STRING_AND_COLOR, SpecVisibility.DEFAULT)
     hudSubheader(getAllPlayers() if localPlayer.isHoldingButton(Button.SECONDARY_FIRE) else null, "Dash in the direction you are facing. Gain ultimate charge for each projectile hit.", HudPosition.LEFT, 8.5 if localPlayer.isHoldingButton(Button.SECONDARY_FIRE) else 9999, Color.WHITE, HudReeval.VISIBILITY_SORT_ORDER_STRING_AND_COLOR, SpecVisibility.DEFAULT)
@@ -85,33 +87,33 @@ rule "[Global] Global 1":
     readyFX[9] = getLastCreatedText()
     #---ABILITY 2---
     createEffect(getAllPlayers(), Effect.RING, Color.WHITE, vect(4, 0, 0), 2.5, EffectReeval.VISIBILITY_AND_COLOR)
-    readyFX[5] = getLastCreatedEntity()
+    readyFX[10] = getLastCreatedEntity()
     createEffect(getAllPlayers(), Effect.LIGHT_SHAFT, Color.WHITE, vect(4, -24, 0), 2.5, EffectReeval.VISIBILITY_AND_COLOR)
-    readyFX[6] = getLastCreatedEntity()
+    readyFX[11] = getLastCreatedEntity()
     createInWorldText(getAllPlayers(), abilityIcons[(localPlayer.a2Choice)+1], vect(4, 3.5, 0), 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.WHITE, SpecVisibility.DEFAULT)
-    readyFX[7] = getLastCreatedText()
+    readyFX[12] = getLastCreatedText()
     createInWorldText(getAllPlayers(), abilityNames[(localPlayer.a2Choice)+1], vect(4, 2.5, 0), 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.WHITE, SpecVisibility.DEFAULT)
-    readyFX[8] = getLastCreatedText()
+    readyFX[13] = getLastCreatedText()
     createInWorldText(getAllPlayers(), "[{0}]".format(Button.INTERACT), vect(4, 2, 0), 0.75, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.WHITE, SpecVisibility.DEFAULT)
-    readyFX[9] = getLastCreatedText()
+    readyFX[14] = getLastCreatedText()
     #---ULTIMATE---
     createEffect(getAllPlayers(), Effect.RING, Color.WHITE, vect(-4, 0, 0), 2.5, EffectReeval.VISIBILITY_AND_COLOR)
-    readyFX[5] = getLastCreatedEntity()
+    readyFX[15] = getLastCreatedEntity()
     createEffect(getAllPlayers(), Effect.LIGHT_SHAFT, Color.WHITE, vect(-4, -24, 0), 2.5, EffectReeval.VISIBILITY_AND_COLOR)
-    readyFX[6] = getLastCreatedEntity()
+    readyFX[16] = getLastCreatedEntity()
     createInWorldText(getAllPlayers(), abilityIcons[(localPlayer.ultChoice)+2], vect(-4, 3.5, 0), 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.WHITE, SpecVisibility.DEFAULT)
-    readyFX[7] = getLastCreatedText()
+    readyFX[17] = getLastCreatedText()
     createInWorldText(getAllPlayers(), abilityNames[(localPlayer.ultChoice)+2], vect(-4, 2.5, 0), 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.WHITE, SpecVisibility.DEFAULT)
-    readyFX[8] = getLastCreatedText()
+    readyFX[18] = getLastCreatedText()
     createInWorldText(getAllPlayers(), "[{0}]".format(Button.INTERACT), vect(-4, 2, 0), 0.75, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.WHITE, SpecVisibility.DEFAULT)
-    readyFX[9] = getLastCreatedText()
+    readyFX[19] = getLastCreatedText()
     #Player Health Bar
     wait(1)
     #Wait Until Grouped Up
-    while not (all([player.hasSpawned() for player in getPlayers(Team.1)]) and (all([distance(vect(12, 0, 0), i_) <= 3 and distance(vect(12, 0, 0), i_) > 0 for i_ in [player for player in getPlayers(Team.1) if not player.isDummy()]]))):
+    while not (allPlayersReady):
         selectionPercent_READY = 0
         waitUntil(all([player.hasSpawned() for player in getPlayers(Team.1)]), 9999)
-        waitUntil(all([distance(vect(12, 0, 0), i_) <= 3 and distance(vect(12, 0, 0), i_) > 0 for i_ in [player for player in getPlayers(Team.1) if not player.isDummy()]]), 9999)
+        waitUntil(allPlayersReady, 9999)
         waitUntil(selectionPercent_READY == 1, 9999)
         if all([distance(vect(12, 0, 0), i_) <= 3 and distance(vect(12, 0, 0), i_) > 0 for i_ in [player for player in getPlayers(Team.1) if not player.isDummy()]]) and all([player.hasSpawned() for player in getPlayers(Team.1)]):
             break
@@ -124,6 +126,19 @@ rule "[Global] Global 1":
     destroyEffect(readyFX[4])
     destroyEffect(readyFX[5])
     destroyEffect(readyFX[6])
+    destroyInWorldText(readyFX[7])
+    destroyInWorldText(readyFX[8])
+    destroyInWorldText(readyFX[9])
+    destroyEffect(readyFX[10])
+    destroyEffect(readyFX[11])
+    destroyInWorldText(readyFX[12])
+    destroyInWorldText(readyFX[13])
+    destroyInWorldText(readyFX[14])
+    destroyEffect(readyFX[15])
+    destroyEffect(readyFX[16])
+    destroyInWorldText(readyFX[17])
+    destroyInWorldText(readyFX[18])
+    destroyInWorldText(readyFX[19])
     destroyAllDummies()
     wait(1)
     #Actual Start Game
