@@ -4,6 +4,7 @@ rule "[Enemies] Initialize":
     @Event eachPlayer
     @Condition eventPlayer.isDummy() == true
     @Condition eventPlayer.hasSpawned() == true
+    @Condition eventPlayer.getCurrentHero() != Hero.GENJI
     
     eventPlayer.disableEnvironmentCollision(true)
     eventPlayer.setInvisibility(Invis.ALL)
@@ -80,24 +81,26 @@ rule "[Enemies] Dealt Damage":
     @Condition eventDamage >= 100
     
     if not victim.isDummy():
-        if not victim.isUsingAbility1():
+        if victim.usingAbility1REAL == true and victim.a1Choice == 4:
+            playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.TEAM_1, eventPlayer.getPosition(), 200)
+            playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.TEAM_1, eventPlayer.getPosition(), 1)
+            victim.ultCharge += 2
+        elif victim.usingAbility2REAL == true and victim.a2Choice == 4:
+            playEffect(eventPlayer, DynamicEffect.BAPTISTE_BIOTIC_LAUNCHER_EXPLOSION_SOUND, Color.TEAM_1, eventPlayer.getPosition(), 200)
+        else:
             playEffect(getAllPlayers(), DynamicEffect.DEBUFF_IMPACT_SOUND, Color.TEAM_1, eventPlayer.getPosition(), 200)
             playEffect(getAllPlayers(), DynamicEffect.BAD_EXPLOSION, Color.RED, eventPlayer.getPosition(), 1)
             heal(victim, null, eventDamage)
             victim.lives[0] -= 1
             if victim.lives[0] == 0:
                 kill(eventPlayer, null)
-        else:
-            if victim.ultCharge != 0 and victim.ultCharge != 100:
-                playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.TEAM_1, eventPlayer.getPosition(), 200)
-                playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.WHITE, eventPlayer.getPosition(), 1)
-                victim.ultCharge += 2
 
 rule "[Enemies] Reinhardt Charge Insta-Kill":
     @Event eachPlayer
     @Hero genji
     @Condition distance(eventPlayer, (([player for player in getPlayersOnHero(Hero.REINHARDT, Team.2) if player.enemyType == 1]).getPosition()) + vect(0, 1, 0)) <= 2.5
     @Condition distance(eventPlayer, (([player for player in getPlayersOnHero(Hero.REINHARDT, Team.2) if player.enemyType == 1]).getPosition()) + vect(0, 1, 0)) > 0
+    @Condition eventPlayer.hasStatusEffect(Status.PHASED_OUT) != true
     @Condition roundUnderway != false
     
     playEffect(getAllPlayers(), DynamicEffect.DEBUFF_IMPACT_SOUND, Color.TEAM_1, eventPlayer.getPosition(), 200)

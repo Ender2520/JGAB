@@ -33,7 +33,7 @@ def GamePhase_SpawnBots():
         enemySpawnWeights = [0,0,0,1]
         while getNumberOfPlayers(Team.1) != 0 or getMatchTime() > 0.1:
             #GLOBAL WAIT
-            wait(0.15)
+            wait(9999/*0.15*/)
             rng = random.randint(1, 100)
             #Spawn Pharah
             if rng <= 100 * (enemySpawnWeights[0] / totalWeights):
