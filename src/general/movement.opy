@@ -262,8 +262,10 @@ rule "[Movement] A2 Crystallize":
     eventPlayer.abilityEffects[0] = getLastCreatedEntity()
     createEffect(getAllPlayers(), Effect.BAPTISTE_IMMORTALITY_FIELD_PROTECTED_SOUND, Color.WHITE, eventPlayer.getPosition(), 30, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     eventPlayer.abilityEffects[1] = getLastCreatedEntity()
-    eventPlayer.setKnockbackReceived(10)
-    wait(2)
+    eventPlayer.setKnockbackReceived(200)
+    eventPlayer.abilityCharge[0] = 2
+    waitUntil(eventPlayer.abilityCharge[0] == 0, 2)
+    playEffect(eventPlayer, DynamicEffect.ANA_BIOTIC_GRENADE_EXPLOSION_SOUND, Color.TEAM_1, eventPlayer.getPosition(), 200)
     destroyEffect(eventPlayer.abilityEffects[0])
     destroyEffect(eventPlayer.abilityEffects[1])
     wait(0.4)
