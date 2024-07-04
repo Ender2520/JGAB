@@ -156,7 +156,7 @@ rule "[Movement] A1 Dash Effects":
         playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.GREEN, eventPlayer.getPosition(), 1)
         wait(0.032)
     eventPlayer.usingAbility1REAL = false
-    eventPlayer.a1cooldownPATCH = 4
+    eventPlayer.a1cooldownPATCH = 5
     
 rule "[Movement] A1 Blink":
     @Event eachPlayer
@@ -290,11 +290,14 @@ rule "[Movement] A2 Flash Step":
     playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.WHITE, eventPlayer.getPosition(), 2)
     createEffect(getAllPlayers(), Effect.SMOKE_SOUND, Color.WHITE, eventPlayer, 100, EffectReeval.VISIBILITY)
     eventPlayer.abilityEffects[0] = getLastCreatedEntity()
-    createEffect(getAllPlayers(), Effect.CLOUD, Color.WHITE, eventPlayer, 1, EffectReeval.VISIBILITY)
+    createEffect(getAllPlayers(), Effect.CLOUD, Color.WHITE, eventPlayer.getPosition(), 1, EffectReeval.VISIBILITY)
     eventPlayer.abilityEffects[1] = getLastCreatedEntity()
-    createEffect(getAllPlayers(), Effect.CLOUD, Color.WHITE, eventPlayer, 1, EffectReeval.VISIBILITY)
+    createEffect(getAllPlayers(), Effect.CLOUD, Color.WHITE, eventPlayer.getPosition(), 1, EffectReeval.VISIBILITY)
     eventPlayer.abilityEffects[2] = getLastCreatedEntity()
-    createEffect(getAllPlayers(), Effect.BAPTISTE_IMMORTALITY_FIELD_PROTECTED_SOUND, Color.WHITE, eventPlayer.getPosition(), 30, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers(), Effect.SPHERE, Color.WHITE, updateEveryTick(eventPlayer.getEyePosition()), 0.25, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    eventPlayer.abilityEffects[3] = getLastCreatedEntity()
+    createEffect(getAllPlayers(), Effect.BAPTISTE_IMMORTALITY_FIELD_PROTECTED_SOUND, Color.WHITE, eventPlayer.getPosition(), 100, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    eventPlayer.abilityEffects[4] = getLastCreatedEntity()
     eventPlayer.setStatusEffect(eventPlayer, Status.PHASED_OUT, 0.5)
     eventPlayer.setInvisibility(Invis.ALL)
     wait(0.5)
@@ -302,6 +305,8 @@ rule "[Movement] A2 Flash Step":
     destroyEffect(eventPlayer.abilityEffects[0])
     destroyEffect(eventPlayer.abilityEffects[1])
     destroyEffect(eventPlayer.abilityEffects[2])
+    destroyEffect(eventPlayer.abilityEffects[3])
+    destroyEffect(eventPlayer.abilityEffects[4])
     playEffect(getAllPlayers(), DynamicEffect.MOIRA_FADE_REAPPEAR_SOUND, Color.SKY_BLUE, eventPlayer.getPosition(), 100)
     wait(0.4)
     eventPlayer.usingAbility2REAL = false
@@ -381,23 +386,25 @@ rule "[Movement] Ult 1-UP":
     @Condition eventPlayer.getUltCharge() == 100
     @Condition eventPlayer.isAlive()
     @Condition notCCd
-    @Disabled
     
-    eventPlayer.usingUltimateREAL = true
-    stopChasingVariable(eventPlayer.ultCharge)
-    eventPlayer.ultCharge = 0
-    eventPlayer.effectRadius = 0
-    eventPlayer.setUltCharge(0)
-    createEffect(getAllPlayers(), Effect.SPHERE, Color.GREEN, eventPlayer.getPosition(), eventPlayer.effectRadius, EffectReeval.VISIBILITY_POSITION_RADIUS_AND_COLOR)
-    eventPlayer.abilityEffects[6] = getLastCreatedEntity()
-    chase(eventPlayer.effectRadius, 5, duration=1, ChaseReeval.NONE)
-    playEffect(getAllPlayers(), DynamicEffect.ANA_BIOTIC_GRENADE_INCREASED_HEALING_SOUND, Color.TEAM_1, eventPlayer.getPosition(), 100)
-    wait(1)
-    eventPlayer.lives[0] += 1
-    playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.TEAM_1, eventPlayer.getPosition(), 200)
-    destroyEffect(eventPlayer.abilityEffects[6])
-    eventPlayer.usingUltimateREAL = false
-    startChargingUltimate
+    if not eventPlayer.lives[0] < eventPlayer.lives[1]:
+        smallMessage(eventPlayer, "CANNOT USE ULTIMATE WHEN AT FULL HEALTH")
+    else:
+        eventPlayer.usingUltimateREAL = true
+        stopChasingVariable(eventPlayer.ultCharge)
+        eventPlayer.ultCharge = 0
+        eventPlayer.effectRadius = 0
+        eventPlayer.setUltCharge(0)
+        createEffect(getAllPlayers(), Effect.SPHERE, Color.GREEN, eventPlayer.getPosition(), eventPlayer.effectRadius, EffectReeval.VISIBILITY_POSITION_RADIUS_AND_COLOR)
+        eventPlayer.abilityEffects[6] = getLastCreatedEntity()
+        chase(eventPlayer.effectRadius, 5, duration=1, ChaseReeval.NONE)
+        playEffect(getAllPlayers(), DynamicEffect.ANA_BIOTIC_GRENADE_INCREASED_HEALING_SOUND, Color.TEAM_1, eventPlayer.getPosition(), 100)
+        wait(1)
+        eventPlayer.lives[0] += 1
+        playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.TEAM_1, eventPlayer.getPosition(), 200)
+        destroyEffect(eventPlayer.abilityEffects[6])
+        eventPlayer.usingUltimateREAL = false
+        startChargingUltimate
 
 rule "[Movement] Ultimate Charge Loop":
     @Event eachPlayer

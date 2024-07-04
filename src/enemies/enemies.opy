@@ -81,7 +81,7 @@ rule "[Enemies] Dealt Damage":
     @Condition eventDamage >= 100
     
     if not victim.isDummy():
-        if victim.usingAbility1REAL == true and victim.a1Choice == 4:
+        if victim.usingAbility1REAL == true and victim.a1Choice == 1:
             playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.TEAM_1, eventPlayer.getPosition(), 200)
             playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.TEAM_1, eventPlayer.getPosition(), 1)
             victim.ultCharge += 2

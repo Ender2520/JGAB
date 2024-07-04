@@ -29,7 +29,7 @@ settings {
                 "enableMelee": false,
                 "enableSecondaryFire": false,
                 "ability1Cooldown%": 62.5,
-                "ability2Cooldown%": 75
+                "ability2Cooldown%": 62.5
             },
             "mei": {
                 "primaryFireFreezeDuration%": 50,
