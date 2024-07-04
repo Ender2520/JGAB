@@ -9,7 +9,7 @@ rule "[Global] Global 1":
     difficulty = createWorkshopSetting(int[1:10], "Customization", "Difficulty", 5, 1)
     roundLength = createWorkshopSetting(int[60:180], "Customization", "Round Length (in seconds)", 120, 2)
     chaosMode = createWorkshopSetting(bool, "Extra Modes", "Chaos Mode (overrides all customizable settings)", false, 6)
-    testMode = createWorkshopSetting(bool, "Extra Modes", "Test Mode (developer testing)", true, 7)
+    testMode = createWorkshopSetting(bool, "Extra Modes", "Test Mode (developer testing)", false, 7)
     colordisabled = rgba(127, 127, 127, 127)
     point[0] = vect(-20, false, false)
     point[1] = vect(20, false, false)
@@ -23,9 +23,9 @@ rule "[Global] Global 1":
     point2D[1] = vect(x[1], false, z[1])
     direction2D = directionTowards(point2D[0], point2D[1])
     newBackward = crossProduct(camDirection, direction2D)
-    abilityNames = [null,"Dash","Deflect","Eradication","Blink","Harden","Slo-Mo","Grapple Hook","Flash Step","1-UP"]
-    abilityDescriptions = [null, "Dash in the direction you are facing. Gain damage immunity and ultimate charge for each projectile hit", "Deflect any incoming projectiles that are in front of you.", "Immediately destroy all enemies and projectiles.","Blink","Harden","Slo-Mo","Grapple Hook","Flash Step","1-UP"]
-    abilityIcons = [null, abilityIconString(Hero.GENJI, Button.ABILITY_1), abilityIconString(Hero.GENJI, Button.ABILITY_2), abilityIconString(Hero.ILLARI, Button.ABILITY_1), abilityIconString(Hero.TRACER, Button.ABILITY_1), abilityIconString(Hero.BRIGITTE, Button.SECONDARY_FIRE), abilityIconString(Hero.LUCIO, Button.ABILITY_2), abilityIconString(Hero.WIDOWMAKER,Button.ABILITY_1), abilityIconString(Hero.KIRIKO, Button.ABILITY_1), abilityIconString(Hero.MERCY, Button.ABILITY_2)]
+    abilityNames = [null,"Dash","Deflect","Eradication","Blink","Crystallize","Slo-Mo","Grapple Hook","Flash Step","1-UP"]
+    #abilityDescriptions = [null, "Dash in the direction you are facing. Gain damage immunity and ultimate charge for each projectile hit", "Deflect any incoming projectiles that are in front of you.", "Immediately destroy all enemies and projectiles.","Blink","Harden","Slo-Mo","Grapple Hook","Flash Step","1-UP"]
+    abilityIcons = [null, abilityIconString(Hero.GENJI, Button.ABILITY_1), abilityIconString(Hero.GENJI, Button.ABILITY_2), abilityIconString(Hero.ILLARI, Button.ABILITY_1), abilityIconString(Hero.TRACER, Button.ABILITY_1), abilityIconString(Hero.ILLARI, Button.ULTIMATE), abilityIconString(Hero.LUCIO, Button.ABILITY_2), abilityIconString(Hero.WIDOWMAKER,Button.ABILITY_1), abilityIconString(Hero.KIRIKO, Button.ABILITY_1), abilityIconString(Hero.MERCY, Button.ABILITY_2)]
     ultRate = [2.222,3.333,2.222]
     #Hud
     progressBarHud(getAllPlayers() if roundUnderway else null, getMatchTime() / roundLength * 100, roundStatus, HudPosition.TOP, 5, Color.BLACK if chaosMode else Color.AQUA if getMatchTime() >= roundLength - 15 else Color.WHITE if getMatchTime() >= roundLength * 0.5 else Color.RED, Color.BLACK if chaosMode else Color.AQUA if getMatchTime() >= roundLength - 15 else Color.WHITE if getMatchTime() >= roundLength * 0.5 else Color.RED, ProgressHudReeval.VISIBILITY_VALUES_AND_COLOR, SpecVisibility.DEFAULT)

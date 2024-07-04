@@ -185,7 +185,7 @@ rule "[Movement] A1 Blink":
     eventPlayer.a1cooldownPATCH = 3
     #eventPlayer.setAbilityCooldown(Button.ABILITY_1, 3)
 
-rule "[Movement] A1 Grapple Hook":
+rule "[Movement] A1 Grapple Hook":  
     @Event eachPlayer
     @Hero genji
     @Condition ability1Enabled
@@ -198,14 +198,14 @@ rule "[Movement] A1 Grapple Hook":
     @Condition notCCd
 
     eventPlayer.usingAbility1REAL = true
-    eventPlayer.grappleTarget = getClosestPlayer(eventPlayer, eventPlayer.getTeam())
+    eventPlayer.grappleTarget = sorted([p for p in getPlayers(eventPlayer.getTeam()) if p.isAlive() and distance(p, eventPlayer) > 2] , lambda x: distance(eventPlayer, x))
     eventPlayer.beamReach = 0
     createBeam(getAllPlayers(), Beam.GRAPPLE, updateEveryTick(eventPlayer.getPosition() + vect(0,1,0)), updateEveryTick((eventPlayer.grappleTarget.getPosition() + vect(0,1,0)) * eventPlayer.beamReach/100 + (eventPlayer.getPosition() + vect(0,1,0)) * (1-eventPlayer.beamReach/100)), Color.TEAM_1, EffectReeval.VISIBILITY_POSITION_RADIUS_AND_COLOR)
     eventPlayer.abilityEffects[4] = getLastCreatedEntity()
     chase(eventPlayer.beamReach, 100, duration=0.35, ChaseReeval.NONE)
     wait(0.5)
     eventPlayer.setGravity(50)
-    while abs(eventPlayer.grappleTarget.x - eventPlayer.getPosition().x) > 1 and eventPlayer.grappleTarget.isAlive() and eventPlayer.isHoldingButton(Button.ABILITY_1) != true:
+    while abs(eventPlayer.grappleTarget.getPosition().x - eventPlayer.getPosition().x) > 1 and eventPlayer.grappleTarget.isAlive() and eventPlayer.isHoldingButton(Button.ABILITY_1) != true:
         eventPlayer.applyImpulse(Vector.UP, max(0,1-eventPlayer.getPosition().y/5), Relativity.TO_WORLD, Impulse.INCORPORATE_CONTRARY_MOTION)
         eventPlayer.applyImpulse(directionTowards(eventPlayer.getPosition() + vect(0,1,0),eventPlayer.grappleTarget.getPosition() + vect(0,1,0)), 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION_XYZ)
         wait(0.05)
@@ -218,7 +218,7 @@ rule "[Movement] A1 Grapple Hook":
     destroyEffect(eventPlayer.abilityEffects[4])
     eventPlayer.setGravity(100)
     eventPlayer.usingAbility1REAL = false
-    eventPlayer.a1cooldownPATCH = 6
+    eventPlayer.a1cooldownPATCH = 1.25
     #eventPlayer.setAbilityCooldown(Button.ABILITY_1, 3)
 
 rule "[Movement] A2 Use Deflect":
@@ -257,7 +257,7 @@ rule "[Movement] A2 Crystallize":
     @Condition notCCd
 
     eventPlayer.usingAbility2REAL = true
-    playEffect(getAllPlayers(), DynamicEffect.BAPTISTE_BIOTIC_LAUNCHER_EXPLOSION_SOUND, Color.SKY_BLUE, eventPlayer.getPosition(), 100)
+    playEffect(getAllPlayers(), DynamicEffect.BRIGITTE_REPAIR_PACK_ARMOR_SOUND, Color.TEAM_1, eventPlayer.getPosition(), 100)
     createEffect(getAllPlayers(), Effect.BAPTISTE_IMMORTALITY_FIELD_PROTECTED, Color.WHITE, eventPlayer, 1, EffectReeval.VISIBILITY)
     eventPlayer.abilityEffects[0] = getLastCreatedEntity()
     createEffect(getAllPlayers(), Effect.BAPTISTE_IMMORTALITY_FIELD_PROTECTED_SOUND, Color.WHITE, eventPlayer.getPosition(), 30, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
@@ -370,6 +370,34 @@ rule "[Movement] Ult Slo-Mo":
         setSlowMotion(100)
         eventPlayer.usingUltimateREAL = false
         startChargingUltimate
+
+rule "[Movement] Ult 1-UP":
+    @Event eachPlayer
+    @Condition ultimateEnabled
+    @Condition roundUnderway
+    @Condition eventPlayer.ultChoice == 7
+    @Condition eventPlayer.ultCharge == 100
+    @Condition eventPlayer.isHoldingButton(Button.ULTIMATE)
+    @Condition eventPlayer.getUltCharge() == 100
+    @Condition eventPlayer.isAlive()
+    @Condition notCCd
+    @Disabled
+    
+    eventPlayer.usingUltimateREAL = true
+    stopChasingVariable(eventPlayer.ultCharge)
+    eventPlayer.ultCharge = 0
+    eventPlayer.effectRadius = 0
+    eventPlayer.setUltCharge(0)
+    createEffect(getAllPlayers(), Effect.SPHERE, Color.GREEN, eventPlayer.getPosition(), eventPlayer.effectRadius, EffectReeval.VISIBILITY_POSITION_RADIUS_AND_COLOR)
+    eventPlayer.abilityEffects[6] = getLastCreatedEntity()
+    chase(eventPlayer.effectRadius, 5, duration=1, ChaseReeval.NONE)
+    playEffect(getAllPlayers(), DynamicEffect.ANA_BIOTIC_GRENADE_INCREASED_HEALING_SOUND, Color.TEAM_1, eventPlayer.getPosition(), 100)
+    wait(1)
+    eventPlayer.lives[0] += 1
+    playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.TEAM_1, eventPlayer.getPosition(), 200)
+    destroyEffect(eventPlayer.abilityEffects[6])
+    eventPlayer.usingUltimateREAL = false
+    startChargingUltimate
 
 rule "[Movement] Ultimate Charge Loop":
     @Event eachPlayer

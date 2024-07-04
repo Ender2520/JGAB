@@ -87,6 +87,8 @@ rule "[Enemies] Dealt Damage":
             victim.ultCharge += 2
         elif victim.usingAbility2REAL == true and victim.a2Choice == 4:
             playEffect(eventPlayer, DynamicEffect.BAPTISTE_BIOTIC_LAUNCHER_EXPLOSION_SOUND, Color.TEAM_1, eventPlayer.getPosition(), 200)
+            playEffect(getAllPlayers(), DynamicEffect.BAD_EXPLOSION, Color.ORANGE, eventPlayer.getPosition(), 1)
+            victim.abilityCharge[0] -= 1
         else:
             playEffect(getAllPlayers(), DynamicEffect.DEBUFF_IMPACT_SOUND, Color.TEAM_1, eventPlayer.getPosition(), 200)
             playEffect(getAllPlayers(), DynamicEffect.BAD_EXPLOSION, Color.RED, eventPlayer.getPosition(), 1)
