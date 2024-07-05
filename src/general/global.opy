@@ -9,7 +9,7 @@ rule "[Global] Global 1":
     difficulty = createWorkshopSetting(int[1:10], "Customization", "Difficulty", 5, 1)
     roundLength = createWorkshopSetting(int[60:180], "Customization", "Round Length (in seconds)", 120, 2)
     chaosMode = createWorkshopSetting(bool, "Extra Modes", "Chaos Mode (overrides all customizable settings)", false, 6)
-    testMode = createWorkshopSetting(bool, "Extra Modes", "Test Mode (developer testing)", false, 7)
+    testMode = createWorkshopSetting(bool, "Extra Modes", "Test Mode (developer testing)", true, 7)
     colordisabled = rgba(127, 127, 127, 127)
     point[0] = vect(-20, false, false)
     point[1] = vect(20, false, false)
@@ -71,15 +71,15 @@ rule "[Global] Global 1":
     readyFX[4] = getLastCreatedEntity()
     #Create Ability Changes
     #---ABILITY 1---
-    createEffect(getAllPlayers(), Effect.RING, Color.WHITE, vect(12, 0, 0), 2.5, EffectReeval.VISIBILITY_AND_COLOR)
+    createEffect(getAllPlayers(), Effect.RING, Color.RED if len(getAllPlayers()) == 1 and localPlayer.a1Choice == 7 else Color.WHITE, vect(12, 0, 0), 2.5, EffectReeval.VISIBILITY_AND_COLOR)
     readyFX[5] = getLastCreatedEntity()
-    createEffect(getAllPlayers(), Effect.LIGHT_SHAFT, Color.WHITE, vect(12, -24, 0), 2.5, EffectReeval.VISIBILITY_AND_COLOR)
+    createEffect(getAllPlayers(), Effect.LIGHT_SHAFT, Color.RED if len(getAllPlayers()) == 1 and localPlayer.a1Choice == 7 else Color.WHITE, vect(12, -24, 0), 2.5, EffectReeval.VISIBILITY_AND_COLOR)
     readyFX[6] = getLastCreatedEntity()
     createInWorldText(getAllPlayers(), abilityIcons[(localPlayer.a1Choice)], vect(12, 3.5, 0), 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.WHITE, SpecVisibility.DEFAULT)
     readyFX[7] = getLastCreatedText()
-    createInWorldText(getAllPlayers(), abilityNames[(localPlayer.a1Choice)], vect(12, 2.5, 0), 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.WHITE, SpecVisibility.DEFAULT)
+    createInWorldText(getAllPlayers(), abilityNames[(localPlayer.a1Choice)], vect(12, 2.5, 0), 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.RED if len(getAllPlayers()) == 1 and localPlayer.a1Choice == 7 else Color.WHITE, SpecVisibility.DEFAULT)
     readyFX[8] = getLastCreatedText()
-    createInWorldText(getAllPlayers(), "[{0}]".format(Button.INTERACT), vect(12, 2, 0), 0.75, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.WHITE, SpecVisibility.DEFAULT)
+    createInWorldText(getAllPlayers(), "[{0}]".format(Button.INTERACT), vect(12, 2, 0), 0.75, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.RED if len(getAllPlayers()) == 1 and localPlayer.a1Choice == 7 else Color.WHITE, SpecVisibility.DEFAULT)
     readyFX[9] = getLastCreatedText()
     #---ABILITY 2---
     createEffect(getAllPlayers(), Effect.RING, Color.WHITE, vect(4, 0, 0), 2.5, EffectReeval.VISIBILITY_AND_COLOR)
