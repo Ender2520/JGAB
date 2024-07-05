@@ -1,5 +1,7 @@
 #!mainFile "../main.opy"
 
+#!define exponentiate3(left-operand) (left-operand * left-operand * left-operand)
+
 #!define wuPhase getMatchTime() >= roundLength - 15
 #!define nPhase getMatchTime() >= roundLength * 0.5
 #!define fPhase 1 if getMatchTime() >= roundLength * 0.5 else 0.75
@@ -18,6 +20,7 @@
 #!define allPlayersReady all([distance(player.getPosition() * vect(1, 0, 1), vect(-12, 0, 0)) <= 3 and distance(vect(-12, 0, 0), player) > 0 and not player.isDummy() for player in getPlayers(Team.1)])
 
 #!define startChargingUltimate chase(eventPlayer.ultCharge, 100, rate=ultRate[(eventPlayer.ultChoice-1)/3], ChaseReeval.DESTINATION_AND_RATE)
+#!define grappleDistance(PLAYER) distance(PLAYER.getPosition() + vect(0,1,0),PLAYER.grappleTarget.getPosition() + vect(0,1,0))
 
 #!define notCCd not any([eventPlayer.hasStatusEffect(Status.STUNNED),eventPlayer.hasStatusEffect(Status.KNOCKED_DOWN)])
 
@@ -43,6 +46,7 @@ globalvar ability2Enabled
 globalvar ultimateEnabled
 globalvar chaosMode
 globalvar testMode
+globalvar movingBotPOS
 globalvar roundLength
 globalvar i
 globalvar abilityNames
@@ -82,4 +86,6 @@ playervar bulletsLeft
 playervar a1cooldownPATCH
 playervar grappleTarget
 playervar activeGrapplePosition
+playervar grappleStrength
 playervar abilityCharge
+playervar abilityDuration
