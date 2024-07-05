@@ -198,16 +198,21 @@ rule "[Movement] A1 Grapple Hook":
     @Condition notCCd
 
     eventPlayer.usingAbility1REAL = true
-    eventPlayer.grappleTarget = sorted([p for p in getPlayers(eventPlayer.getTeam()) if p.isAlive() and distance(p, eventPlayer) > 2] , lambda x: distance(eventPlayer, x))
+    eventPlayer.grappleTarget = sorted([p for p in getPlayers(eventPlayer.getTeam()) if p.isAlive() and distance(p, eventPlayer) > 0] , lambda x: distance(eventPlayer, x))
+    if eventPlayer.grappleTarget == null:
+        return
     eventPlayer.beamReach = 0
+    eventPlayer.grappleStrength = 20
     createBeam(getAllPlayers(), Beam.GRAPPLE, updateEveryTick(eventPlayer.getPosition() + vect(0,1,0)), updateEveryTick((eventPlayer.grappleTarget.getPosition() + vect(0,1,0)) * eventPlayer.beamReach/100 + (eventPlayer.getPosition() + vect(0,1,0)) * (1-eventPlayer.beamReach/100)), Color.TEAM_1, EffectReeval.VISIBILITY_POSITION_RADIUS_AND_COLOR)
     eventPlayer.abilityEffects[4] = getLastCreatedEntity()
-    chase(eventPlayer.beamReach, 100, duration=0.35, ChaseReeval.NONE)
-    wait(0.5)
+    chase(eventPlayer.beamReach, 100, duration=(distance(eventPlayer.getPosition() + vect(0,1,0), eventPlayer.grappleTarget.getPosition() + vect(0,1,0))) / 40, ChaseReeval.NONE)
+    waitUntil(eventPlayer.beamReach == 100, 9999)
+    wait(0.1)
+    chase(eventPlayer.grappleStrength, 12, duration=2.5, ChaseReeval.NONE)
     eventPlayer.setGravity(50)
-    while abs(eventPlayer.grappleTarget.getPosition().x - eventPlayer.getPosition().x) > 1 and eventPlayer.grappleTarget.isAlive() and eventPlayer.isHoldingButton(Button.ABILITY_1) != true:
-        eventPlayer.applyImpulse(Vector.UP, max(0,1-eventPlayer.getPosition().y/5), Relativity.TO_WORLD, Impulse.INCORPORATE_CONTRARY_MOTION)
-        eventPlayer.applyImpulse(directionTowards(eventPlayer.getPosition() + vect(0,1,0),eventPlayer.grappleTarget.getPosition() + vect(0,1,0)), 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION_XYZ)
+    while /*abs(eventPlayer.grappleTarget.getPosition().x - eventPlayer.getPosition().x) > 0.75) and */eventPlayer.grappleStrength > 12 and eventPlayer.grappleTarget.isAlive() and eventPlayer.isHoldingButton(Button.ABILITY_1) != true:
+        eventPlayer.applyImpulse(Vector.UP, max(0,-0.25 * (eventPlayer.getPosition().y ** 2) + 0.5), Relativity.TO_WORLD, Impulse.INCORPORATE_CONTRARY_MOTION)
+        eventPlayer.applyImpulse(directionTowards(eventPlayer.getPosition() + vect(0,1,0),eventPlayer.grappleTarget.getPosition() + vect(0,1,0)), min(eventPlayer.grappleStrength, 0.4 * ((grappleDistance(eventPlayer)) ** 2)), Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION_XYZ)
         wait(0.05)
     /* stiffer version
     eventPlayer.startForcingPosition(eventPlayer.activeGrapplePosition, true)
@@ -215,6 +220,10 @@ rule "[Movement] A1 Grapple Hook":
     waitUntil(distance(eventPlayer.grappleTarget.getPosition(), eventPlayer.getPosition()) < 1, 3)
     eventPlayer.stopForcingPosition()
     */
+    if eventPlayer.isHoldingButton(Button.ABILITY_1) == true:
+        eventPlayer.applyImpulse(directionTowards(eventPlayer.getPosition() + vect(0,1,0),eventPlayer.grappleTarget.getPosition() + vect(0,1,0)), 7.5, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION_XYZ)
+    else:
+        eventPlayer.applyImpulse(directionTowards(eventPlayer.getPosition() + vect(0,1,0),eventPlayer.grappleTarget.getPosition() + vect(0,1,0)), 2.5, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION_XYZ)
     destroyEffect(eventPlayer.abilityEffects[4])
     eventPlayer.setGravity(100)
     eventPlayer.usingAbility1REAL = false
@@ -257,21 +266,24 @@ rule "[Movement] A2 Crystallize":
     @Condition notCCd
 
     eventPlayer.usingAbility2REAL = true
-    playEffect(getAllPlayers(), DynamicEffect.BRIGITTE_REPAIR_PACK_ARMOR_SOUND, Color.TEAM_1, eventPlayer.getPosition(), 100)
+    eventPlayer.abilityDuration = 1
+    playEffect(eventPlayer, DynamicEffect.BRIGITTE_REPAIR_PACK_ARMOR_SOUND, Color.TEAM_1, eventPlayer.getPosition(), 100)
     createEffect(getAllPlayers(), Effect.BAPTISTE_IMMORTALITY_FIELD_PROTECTED, Color.WHITE, eventPlayer, 1, EffectReeval.VISIBILITY)
     eventPlayer.abilityEffects[0] = getLastCreatedEntity()
-    createEffect(getAllPlayers(), Effect.BAPTISTE_IMMORTALITY_FIELD_PROTECTED_SOUND, Color.WHITE, eventPlayer.getPosition(), 30, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(eventPlayer, Effect.BAPTISTE_IMMORTALITY_FIELD_PROTECTED_SOUND, Color.WHITE, eventPlayer.getPosition(), 100, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     eventPlayer.abilityEffects[1] = getLastCreatedEntity()
     eventPlayer.setKnockbackReceived(200)
     eventPlayer.abilityCharge[0] = 2
-    waitUntil(eventPlayer.abilityCharge[0] == 0, 2)
+    chase(eventPlayer.abilityDuration, 0, duration=10, ChaseReeval.DESTINATION_AND_DURATION)
+    waitUntil(eventPlayer.abilityCharge[0] == 0 or eventPlayer.abilityDuration == 0, 9999)
+    stopChasingVariable(eventPlayer.abilityDuration)
     playEffect(eventPlayer, DynamicEffect.ANA_BIOTIC_GRENADE_EXPLOSION_SOUND, Color.TEAM_1, eventPlayer.getPosition(), 200)
     destroyEffect(eventPlayer.abilityEffects[0])
     destroyEffect(eventPlayer.abilityEffects[1])
     wait(0.4)
     eventPlayer.usingAbility2REAL = false
     eventPlayer.setKnockbackReceived(100)
-    eventPlayer.setAbilityCooldown(Button.ABILITY_2, 4)
+    eventPlayer.setAbilityCooldown(Button.ABILITY_2, 10)
 
 rule "[Movement] A2 Flash Step":
     @Event eachPlayer
@@ -286,18 +298,16 @@ rule "[Movement] A2 Flash Step":
     @Condition notCCd
 
     eventPlayer.usingAbility2REAL = true
-    playEffect(getAllPlayers(), DynamicEffect.MOIRA_FADE_DISAPPEAR_SOUND, Color.SKY_BLUE, eventPlayer.getPosition(), 100)
-    playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.WHITE, eventPlayer.getPosition(), 2)
-    createEffect(getAllPlayers(), Effect.SMOKE_SOUND, Color.WHITE, eventPlayer, 100, EffectReeval.VISIBILITY)
+    playEffect(eventPlayer, DynamicEffect.MOIRA_FADE_DISAPPEAR_SOUND, Color.SKY_BLUE, eventPlayer.getPosition(), 100)
+    playEffect(eventPlayer, DynamicEffect.GOOD_EXPLOSION, Color.WHITE, eventPlayer.getPosition(), 2)
+    createEffect(eventPlayer, Effect.SMOKE_SOUND, Color.WHITE, eventPlayer, 100, EffectReeval.VISIBILITY)
     eventPlayer.abilityEffects[0] = getLastCreatedEntity()
     createEffect(getAllPlayers(), Effect.CLOUD, Color.WHITE, eventPlayer.getPosition(), 1, EffectReeval.VISIBILITY)
     eventPlayer.abilityEffects[1] = getLastCreatedEntity()
     createEffect(getAllPlayers(), Effect.CLOUD, Color.WHITE, eventPlayer.getPosition(), 1, EffectReeval.VISIBILITY)
     eventPlayer.abilityEffects[2] = getLastCreatedEntity()
-    createEffect(getAllPlayers(), Effect.SPHERE, Color.WHITE, updateEveryTick(eventPlayer.getEyePosition()), 0.25, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(eventPlayer, Effect.BAPTISTE_IMMORTALITY_FIELD_PROTECTED_SOUND, Color.WHITE, eventPlayer.getPosition(), 100, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     eventPlayer.abilityEffects[3] = getLastCreatedEntity()
-    createEffect(getAllPlayers(), Effect.BAPTISTE_IMMORTALITY_FIELD_PROTECTED_SOUND, Color.WHITE, eventPlayer.getPosition(), 100, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-    eventPlayer.abilityEffects[4] = getLastCreatedEntity()
     eventPlayer.setStatusEffect(eventPlayer, Status.PHASED_OUT, 0.5)
     eventPlayer.setInvisibility(Invis.ALL)
     wait(0.5)
@@ -306,7 +316,6 @@ rule "[Movement] A2 Flash Step":
     destroyEffect(eventPlayer.abilityEffects[1])
     destroyEffect(eventPlayer.abilityEffects[2])
     destroyEffect(eventPlayer.abilityEffects[3])
-    destroyEffect(eventPlayer.abilityEffects[4])
     playEffect(getAllPlayers(), DynamicEffect.MOIRA_FADE_REAPPEAR_SOUND, Color.SKY_BLUE, eventPlayer.getPosition(), 100)
     wait(0.4)
     eventPlayer.usingAbility2REAL = false
@@ -441,26 +450,34 @@ rule "[Movement] Switch Ability Selection":
     @Condition eventPlayer.isHoldingButton(Button.INTERACT)
     @Condition distance(eventPlayer.getPosition() * vect(1,0,1), vect(12,0,0)) <= 2 or distance(eventPlayer.getPosition() * vect(1,0,1), vect(4,0,0)) <= 2 or distance(eventPlayer.getPosition() * vect(1,0,1), vect(-4,0,0)) <= 2
 
-    playEffect(eventPlayer, DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, eventPlayer, 50)
     if distance(eventPlayer.getPosition() * vect(1,0,1), vect(12,0,0)) <= 2:
-        playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.WHITE, vect(12,0,0), 5)
-        eventPlayer.a1cooldownPATCH = 0
+        if eventPlayer.a1Choice == 4 and len(getAllPlayers()) == 1:
+            eventPlayer.a1Choice += 3 
+            playEffect(eventPlayer, DynamicEffect.DEBUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 50)
+            playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.RED, vect(12,0,0), 5)
+            smallMessage(eventPlayer, "GRAPPLE HOOK CANNOT BE USED IN SINGLEPLAYER")
+            if testMode:
+                return
+            wait(3, Wait.RESTART_WHEN_TRUE)
+        else:
+            playEffect(eventPlayer, DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, eventPlayer, 50)
+            playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.WHITE, vect(12,0,0), 5)
         if abilityNames[(eventPlayer.a1Choice)+3] == null:
             eventPlayer.a1Choice = 1
         else:
-            eventPlayer.a1Choice += 3 
-    if distance(eventPlayer.getPosition() * vect(1,0,1), vect(4,0,0)) <= 2:
-        playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.WHITE, vect(4,0,0), 5)
+            eventPlayer.a1Choice += 3
+    elif distance(eventPlayer.getPosition() * vect(1,0,1), vect(4,0,0)) <= 2:
         eventPlayer.setAbilityCooldown(Button.ABILITY_2, 0)
         if abilityNames[(eventPlayer.a2Choice+1)+3] == null:
             eventPlayer.a2Choice = 1
         else:
             eventPlayer.a2Choice += 3 
-    if distance(eventPlayer.getPosition() * vect(1,0,1), vect(-4,0,0)) <= 2:
-        playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.WHITE, vect(-4,0,0), 5)
+        playEffect(eventPlayer, DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, eventPlayer, 50)
+        playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.WHITE, vect(4,0,0), 5)
+    elif distance(eventPlayer.getPosition() * vect(1,0,1), vect(-4,0,0)) <= 2:
         if abilityNames[(eventPlayer.ultChoice+2)+3] == null:
             eventPlayer.ultChoice = 1
         else:
             eventPlayer.ultChoice += 3 
-
-
+        playEffect(eventPlayer, DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, eventPlayer, 50)
+        playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.WHITE, vect(-4,0,0), 5)
