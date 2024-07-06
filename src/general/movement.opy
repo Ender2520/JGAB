@@ -230,6 +230,19 @@ rule "[Movement] A1 Grapple Hook":
     eventPlayer.a1cooldownPATCH = 1.25
     #eventPlayer.setAbilityCooldown(Button.ABILITY_1, 3)
 
+rule "[Movement] No Grapple Hook in Singleplayer":
+    @Event eachPlayer
+    @Condition abilityNames[(eventPlayer.a1Choice)] == "Grapple Hook"
+    @Condition len(getAllPlayers()) == 1
+    @Condition devOptions[2] != true
+
+    waitUntil(distance(eventPlayer.getPosition() * vect(1,0,1), vect(12,0,0)) > 2 or abilityNames[(eventPlayer.a1Choice)] != "Grapple Hook", 3)
+    if abilityNames[(eventPlayer.a1Choice)] == "Grapple Hook":
+        if abilityNames[(eventPlayer.a1Choice)+3] == null:
+            eventPlayer.a1Choice = 1
+        else:
+            eventPlayer.a1Choice += 3
+
 rule "[Movement] A2 Use Deflect":
     @Event eachPlayer
     @Condition ability2Enabled
@@ -451,14 +464,10 @@ rule "[Movement] Switch Ability Selection":
     @Condition distance(eventPlayer.getPosition() * vect(1,0,1), vect(12,0,0)) <= 2 or distance(eventPlayer.getPosition() * vect(1,0,1), vect(4,0,0)) <= 2 or distance(eventPlayer.getPosition() * vect(1,0,1), vect(-4,0,0)) <= 2
 
     if distance(eventPlayer.getPosition() * vect(1,0,1), vect(12,0,0)) <= 2:
-        if eventPlayer.a1Choice == 4 and len(getAllPlayers()) == 1:
-            eventPlayer.a1Choice += 3 
+        if abilityNames[(eventPlayer.a1Choice) + 3] == "Grapple Hook" and len(getAllPlayers()) == 1:
             playEffect(eventPlayer, DynamicEffect.DEBUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 50)
             playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.RED, vect(12,0,0), 5)
             smallMessage(eventPlayer, "GRAPPLE HOOK CANNOT BE USED IN SINGLEPLAYER")
-            if testMode:
-                return
-            wait(3, Wait.RESTART_WHEN_TRUE)
         else:
             playEffect(eventPlayer, DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, eventPlayer, 50)
             playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.WHITE, vect(12,0,0), 5)

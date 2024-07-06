@@ -39,20 +39,25 @@ globalvar rng
 globalvar targetOffset
 globalvar toX
 globalvar toY
+
+globalvar selectionPercent_READY
 globalvar roundUnderway
 globalvar roundStatus
+globalvar roundLength
+globalvar chaosMode
+
+globalvar testMode
+globalvar devOptions /*1=enemy spawns; 2=grapple bypass; 3=bot spawning*/
+globalvar devSelection
+globalvar devIsSelecting
+globalvar movingBotPOS
+
 globalvar ability1Enabled
 globalvar ability2Enabled
 globalvar ultimateEnabled
-globalvar chaosMode
-globalvar testMode
-globalvar movingBotPOS
-globalvar roundLength
-globalvar i
 globalvar abilityNames
 globalvar abilityDescriptions
 globalvar abilityIcons
-globalvar selectionPercent_READY
 globalvar ultRate
 
 globalvar enemySpawnWeights

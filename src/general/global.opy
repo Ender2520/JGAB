@@ -10,6 +10,9 @@ rule "[Global] Global 1":
     roundLength = createWorkshopSetting(int[60:180], "Customization", "Round Length (in seconds)", 120, 2)
     chaosMode = createWorkshopSetting(bool, "Extra Modes", "Chaos Mode (overrides all customizable settings)", false, 6)
     testMode = createWorkshopSetting(bool, "Extra Modes", "Test Mode (developer testing)", true, 7)
+    devOptions = [false,false,false,false]
+    devSelection = 0
+    devIsSelecting = false
     colordisabled = rgba(127, 127, 127, 127)
     point[0] = vect(-20, false, false)
     point[1] = vect(20, false, false)
@@ -46,7 +49,7 @@ rule "[Global] Global 1":
     createInWorldText(null if roundUnderway else getAllPlayers(), "Reinhardt", vect(-14, 5, 19.5), 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_AND_POSITION, Color.YELLOW, SpecVisibility.ALWAYS)
     createEffect(null if roundUnderway else getAllPlayers(), Effect.SPHERE, Color.ORANGE, vect(-14, 5.5, 20), 1, EffectReeval.VISIBILITY_AND_COLOR)
     createEffect(null if roundUnderway else getAllPlayers(), Effect.SPHERE, Color.YELLOW, vect(-14, 5.5, 20), 0.8, EffectReeval.VISIBILITY_AND_COLOR)
-    hudText(getAllPlayers(), "{0}".format(iconString(Icon.FLAG)), "Difficulty", "CHAOS MODE" if chaosMode else "Level {0}".format(difficulty), HudPosition.LEFT, 5, Color.BLACK if chaosMode else Color.WHITE, Color.BLACK if chaosMode else Color.WHITE, Color.BLACK if chaosMode else Color.WHITE, HudReeval.VISIBILITY_SORT_ORDER_STRING_AND_COLOR, SpecVisibility.DEFAULT)
+    hudText(getAllPlayers(),  abilityIconString(Hero.SOMBRA, Button.ULTIMATE) if chaosMode else iconString(Icon.HAPPY) if difficulty <= 2 else iconString(Icon.CHECKMARK) if difficulty <= 4 else iconString(Icon.BOLT) if difficulty <= 6 else iconString(Icon.SAD) if difficulty <= 8 else iconString(Icon.SKULL), "Difficulty", "Chaos Mode" if chaosMode else "Level {0}".format(difficulty), HudPosition.LEFT, 5, Color.BLACK if chaosMode else Color.WHITE, Color.BLACK if chaosMode else Color.WHITE, Color.BLACK if chaosMode else Color.WHITE, HudReeval.VISIBILITY_SORT_ORDER_STRING_AND_COLOR, SpecVisibility.DEFAULT)
     hudSubtext(getAllPlayers(), " \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", HudPosition.LEFT, 6, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.DEFAULT)
     
     hudText(getAllPlayers(), "{0}".format(abilityIcons[(localPlayer.a1Choice)]), abilityNames[(localPlayer.a1Choice)], "--Disabled--" if ability1Enabled != true else "Ready" if /*localPlayer.getAbilityCooldown(Button.ABILITY_1) == 0*/localPlayer.a1cooldownPATCH == 0 else /*localPlayer.getAbilityCooldown(Button.ABILITY_1)*/localPlayer.a1cooldownPATCH, HudPosition.LEFT, 8, colordisabled if ability1Enabled != true else Color.YELLOW if localPlayer.usingAbility1REAL else Color.RED if /*localPlayer.getAbilityCooldown(Button.ABILITY_1) > 0*/localPlayer.a1cooldownPATCH > 0 else Color.WHITE, colordisabled if ability1Enabled != true else Color.YELLOW if localPlayer.usingAbility1REAL else Color.RED if /*localPlayer.getAbilityCooldown(Button.ABILITY_1) > 0*/localPlayer.a1cooldownPATCH else Color.WHITE, colordisabled if ability1Enabled != true else Color.YELLOW if localPlayer.usingAbility1REAL else Color.RED if /*localPlayer.getAbilityCooldown(Button.ABILITY_1) > 0*/localPlayer.a1cooldownPATCH else Color.WHITE, HudReeval.VISIBILITY_SORT_ORDER_STRING_AND_COLOR, SpecVisibility.DEFAULT)

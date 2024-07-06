@@ -29,7 +29,7 @@ def GamePhase_SpawnBots():
     #
     # Determine Difficulty
     # 
-    if testMode == true:
+    if devOptions[1] == true:
         enemySpawnWeights = [0,0,0,1]
         while getNumberOfPlayers(Team.1) != 0 or getMatchTime() > 0.1:
             #GLOBAL WAIT
