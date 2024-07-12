@@ -64,8 +64,6 @@ globalvar enemySpawnWeights
 globalvar enemyMAXSpawnDelays
 globalvar enemyMINSpawnDelays
 
-globalvar colordisabled
-
 #Player variables
 
 playervar faceDirection

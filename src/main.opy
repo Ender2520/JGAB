@@ -10,7 +10,7 @@
 
 #!include "general/ref.opy"
 #!include "general/sub.opy"
-#!include "general/dev.opy"
+##!include "general/dev.opy"
 #!include "general/global.opy"
 #!include "general/movement.opy"
 #!include "enemies/mei.opy"

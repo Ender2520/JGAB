@@ -463,7 +463,7 @@ rule "[Movement] Switch Ability Selection":
     @Condition eventPlayer.isHoldingButton(Button.INTERACT)
     @Condition distance(eventPlayer.getPosition() * vect(1,0,1), vect(12,0,0)) <= 2 or distance(eventPlayer.getPosition() * vect(1,0,1), vect(4,0,0)) <= 2 or distance(eventPlayer.getPosition() * vect(1,0,1), vect(-4,0,0)) <= 2
 
-    if distance(eventPlayer.getPosition() * vect(1,0,1), vect(12,0,0)) <= 2:
+    if distance(eventPlayer.getPosition() * vect(1,0,1), vect(12,0,0)) <= 2 and ability1Enabled:
         if abilityNames[(eventPlayer.a1Choice) + 3] == "Grapple Hook" and len(getAllPlayers()) == 1:
             playEffect(eventPlayer, DynamicEffect.DEBUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 50)
             playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.RED, vect(12,0,0), 5)
@@ -475,7 +475,7 @@ rule "[Movement] Switch Ability Selection":
             eventPlayer.a1Choice = 1
         else:
             eventPlayer.a1Choice += 3
-    elif distance(eventPlayer.getPosition() * vect(1,0,1), vect(4,0,0)) <= 2:
+    elif distance(eventPlayer.getPosition() * vect(1,0,1), vect(4,0,0)) <= 2 and ability2Enabled:
         eventPlayer.setAbilityCooldown(Button.ABILITY_2, 0)
         if abilityNames[(eventPlayer.a2Choice+1)+3] == null:
             eventPlayer.a2Choice = 1
@@ -483,7 +483,7 @@ rule "[Movement] Switch Ability Selection":
             eventPlayer.a2Choice += 3 
         playEffect(eventPlayer, DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, eventPlayer, 50)
         playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.WHITE, vect(4,0,0), 5)
-    elif distance(eventPlayer.getPosition() * vect(1,0,1), vect(-4,0,0)) <= 2:
+    elif distance(eventPlayer.getPosition() * vect(1,0,1), vect(-4,0,0)) <= 2 and ultimateEnabled:
         if abilityNames[(eventPlayer.ultChoice+2)+3] == null:
             eventPlayer.ultChoice = 1
         else:
